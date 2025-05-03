@@ -15,7 +15,7 @@ Este projeto explora o conceito de recursividade, sendo utilizado por meio da ex
 
 * PHP
 * HTML5
-* Tailwind CSS
+* CSS
 
 ## 🧑‍💻 Desenvolvedores
 
