@@ -25,6 +25,15 @@ $user = getCurrentUser();
     <main>
         <section>
             <article class="post">
+
+                <div class="card-add-comment">
+                    <form method="post" action="add_comments.php">
+                        <input type="hidden" name="parent_id" value="">
+                        <input type="text" name="content" placeholder="Adicione seu comentario aqui..." required>
+                        <button type="submit">Enviar</button>
+                    </form>
+                </div>
+
                 <div class="user-information">
                     <img src="./public/images/user-photo.png" alt="user-photo">
                     <p><strong>CodeWave</strong>
@@ -38,15 +47,8 @@ $user = getCurrentUser();
                     <hr>
                     <?php renderComments(); ?>
                 </div>
-
-                <div>
-                    <form method="post" action="add_comments.php">
-                        <input type="hidden" name="parent_id" value="">
-                        <input type="text" name="content" placeholder="Escreva um comentário..." required>
-                        <button type="submit">Enviar</button>
-                    </form>
-                </div>
             </article>
+
         </section>
     <?php else: ?>
         <div id="container-btn">

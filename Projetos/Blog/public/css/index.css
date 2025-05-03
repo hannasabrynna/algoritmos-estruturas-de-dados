@@ -48,3 +48,16 @@ p {
     height: 510px;
     width: 560px;
 }
+
+.card-add-comment{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 1rem;
+}
+
+.card-add-comment input{
+    padding: 10px;
+    border-radius: 20px;
+}
