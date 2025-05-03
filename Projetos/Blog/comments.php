@@ -30,8 +30,6 @@ function renderComments($parentId = null, $level = 0)
         echo "</ul>";
     }
 }
-
-
 ?>
 
 

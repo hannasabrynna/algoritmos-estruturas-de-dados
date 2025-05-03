@@ -19,9 +19,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
 
-<form method="post">
-    <input name="email" placeholder="Email" required type="email">
-    <input name="password" placeholder="Senha" required type="password">
-    <button type="submit">Entrar</button>
-</form>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <title>CodeWave</title>
+</head>
+
+<body>
+    <main>
+        <section>
+            <h1>CodeWave</h1>
+            <form method="post">
+                <input name="email" placeholder="Email" required type="email">
+                <input name="password" placeholder="Senha" required type="password">
+                <button type="submit">Entrar</button>
+            </form>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+}
+
+#container-btn {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+
+    a {
+        text-decoration: none;
+    }
+}
+
+#login-btn {
+    background-color: aliceblue;
+    color: #A6123A;
+    padding: 1rem;
+    border-radius: 20px;
+}
+
+#register-btn {
+    background-color: aliceblue;
+    color: #A6123A;
+    padding: 1rem;
+    border-radius: 20px;
+}
+
+p {
+    color: aliceblue;
+}
+
+.post {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-information {
+    display: flex;
+    justify-content: space-between;
+}
+
+#image-post {
+    height: 510px;
+    width: 560px;
+}

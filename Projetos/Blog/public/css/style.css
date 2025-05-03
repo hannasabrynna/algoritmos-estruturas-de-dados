@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('index.css');
+@import url('login.css');
+@import url('register.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #051726;
+    font-family: "Varela Round", sans-serif;
+}
+
+h1{
+    color: aliceblue;
+}
+
