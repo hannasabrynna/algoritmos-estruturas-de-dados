@@ -3,7 +3,7 @@ Este repositório foi criado com o objetivo de reunir todos os mini projetos des
 
 ## 📂 Projetos
 
-* [Projeto 01](https://github.com/hannasabrynna/Blog-PHP/tree/main/Blog) - Recursividade
+* [Projeto 01](https://github.com/hannasabrynna/Blog-PHP/tree/main/Projetos/Blog) - Recursividade
 
 ## 👨‍💻 Desenvolvedores
 
