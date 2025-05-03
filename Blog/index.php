@@ -11,8 +11,8 @@ $user = getCurrentUser();
     <h1>Comentários</h1>
 
     <?php if ($user): ?>
-        <p>Olá, <strong><?= htmlspecialchars($user['name']) ?></strong> | <a href="logout.php">Sair</a></p>
-        <form method="post" action="add_comment.php">
+        <p>Olá, <strong><?= htmlspecialchars($user['name']) ?></strong> | <a href="logout.php">Sair</a>  | <a href="comments.php">Comentarios</a></p>
+        <form method="post" action="add_comments.php">
             <input type="hidden" name="parent_id" value="">
             <input type="text" name="content" placeholder="Escreva um comentário..." required>
             <button type="submit">Enviar</button>

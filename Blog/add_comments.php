@@ -17,3 +17,4 @@ if ($content) {
 
 header("Location: index.php");
 exit;
+?>

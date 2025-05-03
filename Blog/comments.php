@@ -19,7 +19,7 @@ function renderComments($parentId = null, $level = 0)
         foreach ($comments as $comment) {
             echo "<li>";
             echo "<p><strong>{$comment['user_name']}</strong>: " . htmlspecialchars($comment['content']) . "</p>";
-            echo "<form method='post' action='add_comment.php'>
+            echo "<form method='post' action='add_comments.php'>
                     <input type='hidden' name='parent_id' value='{$comment['id']}'>
                     <input type='text' name='content' placeholder='Responder...' required>
                     <button type='submit'>Responder</button>
