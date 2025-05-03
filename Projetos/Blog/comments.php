@@ -18,7 +18,7 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
             echo "<p><strong>{$parent['user_name']}</strong>: " . nl2br(htmlspecialchars($parent['content'])) . "</p>";
 
             // Formulário de resposta
-            echo "<form method='post' action='add_comment.php' style='margin-top:10px'>
+            echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
                     <input type='hidden' name='parent_id' value='{$parent['id']}'>
                     <input type='text' name='content' placeholder='Responder...' required style='width:70%; padding:5px;'>
                     <button type='submit' style='padding:5px 10px;'>Responder</button>
@@ -63,7 +63,7 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
             echo "<p><strong>{$comment['user_name']}</strong>: " . nl2br(htmlspecialchars($comment['content'])) . "</p>";
 
             // Formulário de resposta
-            echo "<form method='post' action='add_comment.php' style='margin-top:10px'>
+            echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
                     <input type='hidden' name='parent_id' value='{$comment['id']}'>
                     <input type='text' name='content' placeholder='Responder...' required style='width:70%; padding:5px;'>
                     <button type='submit' style='padding:5px 10px;'>Responder</button>
