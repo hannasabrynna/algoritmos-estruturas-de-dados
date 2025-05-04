@@ -1,6 +1,13 @@
 <?php
 require 'db.php';
 
+
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
 function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $branchId = null, &$totalInBranch = 0)
 {
     global $pdo;
@@ -16,6 +23,15 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
         foreach ($parents as $parent) {
             echo "<div style='border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px;'>";
             echo "<p><strong>{$parent['user_name']}</strong>: " . nl2br(htmlspecialchars($parent['content'])) . "</p>";
+            echo "<p><small>Postado em: " . date('d/m/Y H:i', strtotime($parent['created_at'])) . "</small></p>";
+
+            //deletar comentário
+            if ($_SESSION['user_id'] == $parent['user_id']) {
+                echo "<form method='post' action='delete_comment.php' style='margin-top:10px'>
+                        <input type='hidden' name='comment_id' value='{$parent['id']}'>
+                        <button type='submit' style='padding:5px 10px;'>Deletar</button>
+                      </form>";
+            }
 
             // Formulário de resposta
             echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
@@ -61,6 +77,14 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
             echo "<li class='$class' $style>";
             echo "<div style='border-left: 3px solid #ddd; padding-left: 10px; margin-top: 10px;'>";
             echo "<p><strong>{$comment['user_name']}</strong>: " . nl2br(htmlspecialchars($comment['content'])) . "</p>";
+        
+            //deletar comentário
+            if ($_SESSION['user_id'] == $comment['user_id']) {
+                echo "<form method='post' action='delete_comment.php' style='margin-top:10px'>
+                        <input type='hidden' name='comment_id' value='{$comment['id']}'>
+                        <button type='submit' style='padding:5px 10px;'>Deletar</button>
+                      </form>";
+            }
 
             // Formulário de resposta
             echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
