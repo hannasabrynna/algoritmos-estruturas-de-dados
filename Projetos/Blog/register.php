@@ -1,16 +1,40 @@
 <?php
 require 'db.php';
 
+$errors = [];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['name'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password_raw = $_POST['password'] ?? '';
 
-    $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-    $stmt->execute([$name, $email, $password]);
+    // Validações básicas
+    if ($name === '' || $email === '' || $password_raw === '') {
+        $errors[] = 'Todos os campos são obrigatórios.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Email inválido.';
+    } elseif (strlen($password_raw) < 6) {
+        $errors[] = 'A senha deve ter pelo menos 6 caracteres.';
+    } else {
+        // Verifica se o email já existe
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->fetch()) {
+            $errors[] = 'Este email já está cadastrado.';
+        }
+    }
 
-    header("Location: login.php");
-    exit;
+    // Se não houver erros, insere no banco
+    if (empty($errors)) {
+        $password = password_hash($password_raw, PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+        if ($stmt->execute([$name, $email, $password])) {
+            header("Location: login.php");
+            exit;
+        } else {
+            $errors[] = 'Erro ao salvar os dados. Tente novamente.';
+        }
+    }
 }
 ?>
 
@@ -25,6 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+    <?php if (!empty($errors)): ?>
+        <ul style="color: red;">
+            <?php foreach ($errors as $error): ?>
+                <li><?= htmlspecialchars($error) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
     <form method="post">
         <input name="name" placeholder="Nome" required>
         <input name="email" placeholder="Email" required type="email">
