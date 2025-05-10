@@ -31,13 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
     <main>
-        <section>
-            <h1>CodeWave</h1>
-            <form method="post">
-                <input name="email" placeholder="Email" required type="email">
-                <input name="password" placeholder="Senha" required type="password">
-                <button type="submit">Entrar</button>
-            </form>
+        <section class="container">
+            <div class="form-box" id="login-form">
+                <h1 class="login-title">Entrar</h1>
+                <form method="post">
+                    <input name="email" placeholder="Email" required type="email">
+                    <input name="password" placeholder="Senha" required type="password">
+                    <button type="submit">Entrar</button>
+                </form>
+                <p id="login-link">Não possui uma conta? <a href="/register.php">Cadastre-se </a></p>
+            </div>
         </section>
     </main>
 </body>

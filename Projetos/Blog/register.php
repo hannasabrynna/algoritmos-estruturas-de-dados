@@ -57,12 +57,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </ul>
     <?php endif; ?>
 
-    <form method="post">
-        <input name="name" placeholder="Nome" required>
-        <input name="email" placeholder="Email" required type="email">
-        <input name="password" placeholder="Senha" required type="password">
-        <button type="submit">Cadastre-se</button>
-    </form>
+    <section class="container">
+        <div class="form-box" id="register-form">
+            <h1 class="register-title">Cadastre-se</h1>
+            <form method="post">
+                <input name="name" placeholder="Nome" required>
+                <input name="email" placeholder="Email" required type="email">
+                <input name="password" placeholder="Senha" required type="password">
+                <button type="submit">Cadastre-se</button>
+            </form>
+            <p id="register-link">Já possui uma conta? <a href="/login.php">Entrar</a></p>
+        </div>
+    </section>
 </body>
 
 </html>
