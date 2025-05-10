@@ -2,7 +2,9 @@
 require 'db.php';
 
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
@@ -23,7 +25,7 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
         foreach ($parents as $parent) {
             echo "<div style='border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px;'>";
             echo "<p><strong>{$parent['user_name']}</strong>: " . nl2br(htmlspecialchars($parent['content'])) . "</p>";
-            echo "<p><small>Postado em: " . date('d/m/Y H:i', strtotime($parent['created_at'])) . "</small></p>";
+            echo "<p><small>Postado em: " . date('H:i', strtotime($parent['created_at'])) . "</small></p>";
 
             //deletar comentário
             if ($_SESSION['user_id'] == $parent['user_id']) {
@@ -31,16 +33,31 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
                         <input type='hidden' name='comment_id' value='{$parent['id']}'>
                         <button type='submit' style='padding:5px 10px;'>Deletar</button>
                       </form>";
+
+                // Editar comentário
+                echo "<button onclick=\"showEditForm({$parent['id']})\" style='margin-top:5px;'>Editar</button>";
+
+                echo "<div id='edit-form-{$parent['id']}' style='display:none; margin-top:10px;'>
+                <form method='post' action='update_comments.php'>
+                <input type='hidden' name='comment_id' value='{$parent['id']}'>
+                <textarea name='content' required style='width:100%; height:60px;'>" . htmlspecialchars($parent['content']) . "</textarea>
+                <br>
+                <button type='submit'>Salvar</button>
+                <button type='button' onclick='cancelEditForm({$parent['id']})'>Cancelar</button>
+                </form>
+                </div>";
             }
+
+
 
             // Formulário de resposta
             echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
                     <input type='hidden' name='parent_id' value='{$parent['id']}'>
-                    <input type='text' name='content' placeholder='Responder...' required style='width:70%; padding:5px;'>
+                    <input type='text' name='content' placeholder='Responder' required style='width:70%; padding:5px;'>
                     <button type='submit' style='padding:5px 10px;'>Responder</button>
                   </form>";
 
-            // ✅ Variáveis locais para cada pai
+            // Variáveis locais para cada pai
             $branchId = "branch_" . $parent['id'];
             $countLocal = 0;
             $totalLocal = countBranchComments($parent['id']);
@@ -77,19 +94,34 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
             echo "<li class='$class' $style>";
             echo "<div style='border-left: 3px solid #ddd; padding-left: 10px; margin-top: 10px;'>";
             echo "<p><strong>{$comment['user_name']}</strong>: " . nl2br(htmlspecialchars($comment['content'])) . "</p>";
-        
+
             //deletar comentário
             if ($_SESSION['user_id'] == $comment['user_id']) {
                 echo "<form method='post' action='delete_comment.php' style='margin-top:10px'>
                         <input type='hidden' name='comment_id' value='{$comment['id']}'>
                         <button type='submit' style='padding:5px 10px;'>Deletar</button>
                       </form>";
+
+                // Editar comentário
+                echo "<button onclick=\"showEditForm({$comment['id']})\" style='margin-top:5px;'>Editar</button>";
+
+                echo "<div id='edit-form-{$comment['id']}' style='display:none; margin-top:10px;'>
+                <form method='post' action='update_comments.php'>
+                <input type='hidden' name='comment_id' value='{$comment['id']}'>
+                <textarea name='content' required style='width:100%; height:60px;'>" . htmlspecialchars($comment['content']) . "</textarea>
+                <br>
+                <button type='submit'>Salvar</button>
+                <button type='button' onclick='cancelEditForm({$comment['id']})'>Cancelar</button>
+                </form>
+                </div>";
             }
+
+
 
             // Formulário de resposta
             echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
                     <input type='hidden' name='parent_id' value='{$comment['id']}'>
-                    <input type='text' name='content' placeholder='Responder...' required style='width:70%; padding:5px;'>
+                    <input type='text' name='content' placeholder='Responder' required style='width:70%; padding:5px;'>
                     <button type='submit' style='padding:5px 10px;'>Responder</button>
                   </form>";
 
@@ -119,14 +151,22 @@ function countBranchComments($parentId)
 ?>
 
 <script>
-function toggleComments(branchId, button) {
-    const hidden = document.querySelectorAll('.hidden-comment-' + branchId);
-    const isVisible = hidden[0]?.style.display === 'block';
+    function toggleComments(branchId, button) {
+        const hidden = document.querySelectorAll('.hidden-comment-' + branchId);
+        const isVisible = hidden[0]?.style.display === 'block';
 
-    hidden.forEach(el => {
-        el.style.display = isVisible ? 'none' : 'block';
-    });
+        hidden.forEach(el => {
+            el.style.display = isVisible ? 'none' : 'block';
+        });
 
-    button.textContent = isVisible ? 'Mostrar mais' : 'Mostrar menos';
-}
+        button.textContent = isVisible ? 'Mostrar mais' : 'Mostrar menos';
+    }
+
+    function showEditForm(commentId) {
+        document.getElementById('edit-form-' + commentId).style.display = 'block';
+    }
+
+    function cancelEditForm(commentId) {
+        document.getElementById('edit-form-' + commentId).style.display = 'none';
+    }
 </script>
