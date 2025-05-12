@@ -10,12 +10,13 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+#### Funçoâ para renderizar comentários (recursiva) ####
 function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $branchId = null, &$totalInBranch = 0)
 {
     global $pdo;
 
+     // Buscar todos os comentários pai
     if ($level === 0 && $parentId === null) {
-        // Buscar todos os comentários pai
         $stmt = $pdo->query("SELECT c.*, u.name AS user_name FROM comments c 
                             JOIN users u ON c.user_id = u.id 
                             WHERE c.parent_id IS NULL 
@@ -48,8 +49,6 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
                 </div>";
             }
 
-
-
             // Formulário de resposta
             echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
                     <input type='hidden' name='parent_id' value='{$parent['id']}'>
@@ -76,7 +75,7 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
         return;
     }
 
-    // Comentários filhos/netos
+    // Buscar Comentários filhos/netos
     $stmt = $pdo->prepare("SELECT c.*, u.name AS user_name FROM comments c 
                           JOIN users u ON c.user_id = u.id
                           WHERE c.parent_id = :parent_id
@@ -116,8 +115,6 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
                 </div>";
             }
 
-
-
             // Formulário de resposta
             echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
                     <input type='hidden' name='parent_id' value='{$comment['id']}'>
@@ -133,6 +130,7 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
     }
 }
 
+#### Função para contar comentários (Recusiva) ####
 function countBranchComments($parentId)
 {
     global $pdo;
