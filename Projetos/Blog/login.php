@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>CodeWave</title>
 </head>
 
-<body>
+<body id="login-body">
     <main>
         <section class="container">
             <div class="form-box" id="login-form">

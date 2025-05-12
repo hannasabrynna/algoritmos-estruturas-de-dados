@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>CodeWave</title>
 </head>
 
-<body>
+<body id="register-body">
     <?php if (!empty($errors)): ?>
         <ul style="color: red;">
             <?php foreach ($errors as $error): ?>
