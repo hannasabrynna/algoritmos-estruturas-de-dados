@@ -72,8 +72,10 @@ $user = getCurrentUser();
                     <div class="card-add-comment">
                         <form method="post" action="add_comments.php">
                             <input type="hidden" name="parent_id" value="">
-                            <input type="text" name="content" placeholder="Adicionar comentário" required>
-                            <button type="submit">Enviar</button>
+                            <div style="position: relative; width: 100%;">
+                                <input type="text" id="input-card-comment" name="content" placeholder="Adicione um comentário..." style="border: none; border-bottom: 1px solid #ccc; border-radius: 5px; padding: 8px 70px 8px 10px; width: 100%; height: 50px; outline: none; font-size: 14px;" required>
+                                <button type="submit" style="position: absolute;  top: 50%; right: 10px; transform: translateY(-50%); background: none; color: #4B1D74; border: none; font-size: 14px; font-weight: bold;cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease;cursor: pointer;">Enviar</button>
+                            </div>
                         </form>
                         <?php renderComments(); ?>
                     </div>

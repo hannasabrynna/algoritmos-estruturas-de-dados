@@ -9,24 +9,25 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-function formComment($comment){
+function formComment($comment)
+{
     //deletar comentário
     if ($_SESSION['user_id'] == $comment['user_id']) {
         echo "<form method='post' action='delete_comment.php' style='margin-top:10px'>
                             <input type='hidden' name='comment_id' value='{$comment['id']}'>
-                            <button type='submit' style='padding:5px 10px;'>Deletar</button>
+                            <button type='submit' style='border: none; color: #353535; font-size: 14px; font-weight:bold; cursor: pointer; margin-bottom: 10px; padding: 5px 10px;'>Excluir</button>
                           </form>";
 
         // Editar comentário
-        echo "<button onclick=\"showEditForm({$comment['id']})\" style='margin-top:5px;'>Editar</button>";
+        echo "<button onclick=\"showEditForm({$comment['id']})\" style='border: none; color:#353535; font-size: 14px; font-weight:bold; cursor: pointer; padding: 5px 10px;'>Editar</button>";
 
         echo "<div id='edit-form-{$comment['id']}' style='display:none; margin-top:10px;'>
                     <form method='post' action='update_comments.php'>
                     <input type='hidden' name='comment_id' value='{$comment['id']}'>
-                    <textarea name='content' required style='width:100%; height:60px;'>" . htmlspecialchars($comment['content']) . "</textarea>
+                    <textarea name='content' required style='width:100%; height:60px; margin-bottom: 10px; border: none; border-bottom: 1px solid #ccc; border-radius: 5px; padding: 8px; width: 80%; outline: none; font-size: 14px;'>" . htmlspecialchars($comment['content']) . "</textarea>
                     <br>
-                    <button type='submit'>Salvar</button>
-                    <button type='button' onclick='cancelEditForm({$comment['id']})'>Cancelar</button>
+                    <button type='submit' style='cursor: pointer;'>Salvar</button>
+                    <button type='button' style='cursor: pointer;' onclick='cancelEditForm({$comment['id']})'>Cancelar</button>
                     </form>
                     </div>";
     }
@@ -34,13 +35,16 @@ function formComment($comment){
     // Formulário de resposta
     echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
                         <input type='hidden' name='parent_id' value='{$comment['id']}'>
-                        <input type='text' name='content' placeholder='Responder' required style='width:70%; padding:5px;'>
-                        <button type='submit' style='padding:5px 10px;'>Responder</button>
+                        <div style='position: relative; width: 100%;'> 
+                            <input type='text' style='border: none; border-bottom: 1px solid #ccc; border-radius: 5px; padding: 8px 70px 8px 10px; width: 100%; height: 50px; outline: none; font-size: 14px;'>
+                            <button type='submit' style='position: absolute;  top: 50%; right: 10px; transform: translateY(-50%); background: none; color: #4B1D74; border: none; font-size: 14px; font-weight: medium;cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease;cursor: pointer;'>Responder</button>
+                        </div>
                       </form>";
 }
 
 #### Funçâo para renderizar comentários (recursiva) ####
-function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $branchId = null, &$totalInBranch = 0){
+function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $branchId = null, &$totalInBranch = 0)
+{
     global $pdo;
 
     // Buscar todos os comentários pai
@@ -52,9 +56,9 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
         $parents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($parents as $parent) {
-            echo "<div style='border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px;'>";
-            echo "<p><strong>{$parent['user_name']}</strong>: " . nl2br(htmlspecialchars($parent['content'])) . "</p>";
-            echo "<p><small>Postado em: " . date('H:i', strtotime($parent['created_at'])) . "</small></p>";
+            echo "<div style='padding: 10px 0 10px 0; margin: 0 0 20px 0;'>";
+            echo "<p><strong>{$parent['user_name']}</strong> " . nl2br(htmlspecialchars($parent['content'])) . "</p>";
+            echo "<p><small>" . date('H:i', strtotime($parent['created_at'])) . "</small></p>";
 
             //lista os comentários
             formComment($parent);
