@@ -1,7 +1,6 @@
 <?php
 require 'db.php';
 
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -10,17 +9,46 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-#### Funçoâ para renderizar comentários (recursiva) ####
-function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $branchId = null, &$totalInBranch = 0)
-{
+function formComment($comment){
+    //deletar comentário
+    if ($_SESSION['user_id'] == $comment['user_id']) {
+        echo "<form method='post' action='delete_comment.php' style='margin-top:10px'>
+                            <input type='hidden' name='comment_id' value='{$comment['id']}'>
+                            <button type='submit' style='padding:5px 10px;'>Deletar</button>
+                          </form>";
+
+        // Editar comentário
+        echo "<button onclick=\"showEditForm({$comment['id']})\" style='margin-top:5px;'>Editar</button>";
+
+        echo "<div id='edit-form-{$comment['id']}' style='display:none; margin-top:10px;'>
+                    <form method='post' action='update_comments.php'>
+                    <input type='hidden' name='comment_id' value='{$comment['id']}'>
+                    <textarea name='content' required style='width:100%; height:60px;'>" . htmlspecialchars($comment['content']) . "</textarea>
+                    <br>
+                    <button type='submit'>Salvar</button>
+                    <button type='button' onclick='cancelEditForm({$comment['id']})'>Cancelar</button>
+                    </form>
+                    </div>";
+    }
+
+    // Formulário de resposta
+    echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
+                        <input type='hidden' name='parent_id' value='{$comment['id']}'>
+                        <input type='text' name='content' placeholder='Responder' required style='width:70%; padding:5px;'>
+                        <button type='submit' style='padding:5px 10px;'>Responder</button>
+                      </form>";
+}
+
+#### Funçâo para renderizar comentários (recursiva) ####
+function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $branchId = null, &$totalInBranch = 0){
     global $pdo;
 
-     // Buscar todos os comentários pai
+    // Buscar todos os comentários pai
     if ($level === 0 && $parentId === null) {
         $stmt = $pdo->query("SELECT c.*, u.name AS user_name FROM comments c 
                             JOIN users u ON c.user_id = u.id 
                             WHERE c.parent_id IS NULL 
-                            ORDER BY c.created_at ASC");
+                            ORDER BY c.created_at DESC");
         $parents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($parents as $parent) {
@@ -28,33 +56,8 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
             echo "<p><strong>{$parent['user_name']}</strong>: " . nl2br(htmlspecialchars($parent['content'])) . "</p>";
             echo "<p><small>Postado em: " . date('H:i', strtotime($parent['created_at'])) . "</small></p>";
 
-            //deletar comentário
-            if ($_SESSION['user_id'] == $parent['user_id']) {
-                echo "<form method='post' action='delete_comment.php' style='margin-top:10px'>
-                        <input type='hidden' name='comment_id' value='{$parent['id']}'>
-                        <button type='submit' style='padding:5px 10px;'>Deletar</button>
-                      </form>";
-
-                // Editar comentário
-                echo "<button onclick=\"showEditForm({$parent['id']})\" style='margin-top:5px;'>Editar</button>";
-
-                echo "<div id='edit-form-{$parent['id']}' style='display:none; margin-top:10px;'>
-                <form method='post' action='update_comments.php'>
-                <input type='hidden' name='comment_id' value='{$parent['id']}'>
-                <textarea name='content' required style='width:100%; height:60px;'>" . htmlspecialchars($parent['content']) . "</textarea>
-                <br>
-                <button type='submit'>Salvar</button>
-                <button type='button' onclick='cancelEditForm({$parent['id']})'>Cancelar</button>
-                </form>
-                </div>";
-            }
-
-            // Formulário de resposta
-            echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
-                    <input type='hidden' name='parent_id' value='{$parent['id']}'>
-                    <input type='text' name='content' placeholder='Responder' required style='width:70%; padding:5px;'>
-                    <button type='submit' style='padding:5px 10px;'>Responder</button>
-                  </form>";
+            //lista os comentários
+            formComment($parent);
 
             // Variáveis locais para cada pai
             $branchId = "branch_" . $parent['id'];
@@ -71,15 +74,14 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
 
             echo "</div>";
         }
-
         return;
     }
 
-    // Buscar Comentários filhos/netos
+    // Buscar Comentários filhos
     $stmt = $pdo->prepare("SELECT c.*, u.name AS user_name FROM comments c 
                           JOIN users u ON c.user_id = u.id
                           WHERE c.parent_id = :parent_id
-                          ORDER BY c.created_at ASC");
+                          ORDER BY c.created_at DESC");
     $stmt->execute(['parent_id' => $parentId]);
     $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -94,33 +96,8 @@ function renderComments($parentId = null, $level = 0, $limit = 3, &$count = 0, $
             echo "<div style='border-left: 3px solid #ddd; padding-left: 10px; margin-top: 10px;'>";
             echo "<p><strong>{$comment['user_name']}</strong>: " . nl2br(htmlspecialchars($comment['content'])) . "</p>";
 
-            //deletar comentário
-            if ($_SESSION['user_id'] == $comment['user_id']) {
-                echo "<form method='post' action='delete_comment.php' style='margin-top:10px'>
-                        <input type='hidden' name='comment_id' value='{$comment['id']}'>
-                        <button type='submit' style='padding:5px 10px;'>Deletar</button>
-                      </form>";
-
-                // Editar comentário
-                echo "<button onclick=\"showEditForm({$comment['id']})\" style='margin-top:5px;'>Editar</button>";
-
-                echo "<div id='edit-form-{$comment['id']}' style='display:none; margin-top:10px;'>
-                <form method='post' action='update_comments.php'>
-                <input type='hidden' name='comment_id' value='{$comment['id']}'>
-                <textarea name='content' required style='width:100%; height:60px;'>" . htmlspecialchars($comment['content']) . "</textarea>
-                <br>
-                <button type='submit'>Salvar</button>
-                <button type='button' onclick='cancelEditForm({$comment['id']})'>Cancelar</button>
-                </form>
-                </div>";
-            }
-
-            // Formulário de resposta
-            echo "<form method='post' action='add_comments.php' style='margin-top:10px'>
-                    <input type='hidden' name='parent_id' value='{$comment['id']}'>
-                    <input type='text' name='content' placeholder='Responder' required style='width:70%; padding:5px;'>
-                    <button type='submit' style='padding:5px 10px;'>Responder</button>
-                  </form>";
+            //lista os comentários
+            formComment($comment);
 
             $count++;
             renderComments($comment['id'], $level + 1, $limit, $count, $branchId, $totalInBranch);
