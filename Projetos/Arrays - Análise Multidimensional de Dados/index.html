@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Análise Multidimensional de Vendas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Análise Multidimensional de Vendas - Livraria</h1>
+
+  <section>
+    <h2>Cadastro de Venda</h2>
+    <form id="formVenda">
+      <label>Ano: <input type="number" id="ano" required /></label>
+      <label>Mês: <input type="number" id="mes" min="1" max="12" required /></label>
+      <label>Filial: <input type="text" id="filial" required /></label>
+      <label>Categoria: <input type="text" id="categoria" required /></label>
+      <label>Autor: <input type="text" id="autor" required /></label>
+      <label>Quantidade: <input type="number" id="quantidade" required /></label>
+      <button type="submit">Adicionar Venda</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Análise e Gráfico</h2>
+    <label>Dimensão para eixo X:
+      <select id="dimensaoX">
+        <option value="filial">Filial</option>
+        <option value="categoria">Categoria</option>
+        <option value="autor">Autor</option>
+        <option value="mes">Mês</option>
+        <option value="ano">Ano</option>
+      </select>
+    </label>
+    <button id="gerarGrafico">Gerar Gráfico</button>
+    <canvas id="canvas" width="600" height="400"></canvas>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
