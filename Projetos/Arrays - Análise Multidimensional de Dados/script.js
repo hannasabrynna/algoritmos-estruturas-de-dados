@@ -72,6 +72,21 @@ var CuboDeAnalise = /** @class */ (function () {
         }
         return resultado;
     };
+    // Agrupa as vendas por duas dimensões e soma as quantidades
+    CuboDeAnalise.prototype.agruparPorDuasDimensoes = function (dim1, dim2) {
+        var resultado = {};
+        for (var i = 0; i < this.vendas.length; i++) {
+            var v = this.vendas[i];
+            var chave1 = v[dim1].toString();
+            var chave2 = v[dim2].toString();
+            if (!resultado[chave1])
+                resultado[chave1] = {};
+            if (!resultado[chave1][chave2])
+                resultado[chave1][chave2] = 0;
+            resultado[chave1][chave2] += v.quantidade;
+        }
+        return resultado;
+    };
     return CuboDeAnalise;
 }());
 // Instância única do cubo
@@ -94,32 +109,114 @@ formVenda.onsubmit = function (e) {
 // Gerar gráfico
 var btnGerar = document.getElementById("gerarGrafico");
 btnGerar.onclick = function () {
-    var dimensao = document.getElementById("dimensaoX").value;
-    var dados = cubo.agruparPorDimensao(dimensao);
-    desenharGrafico(dados);
+    var dimensao1 = document.getElementById("dimensaoX").value;
+    var dimensao2 = document.getElementById("dimensaoY").value;
+    if (dimensao1 === dimensao2) {
+        alert("Selecione dimensões diferentes para X e Y.");
+        return;
+    }
+    desenharGraficoDuasDimensoes(cubo.agruparPorDuasDimensoes(dimensao1, dimensao2), dimensao1, dimensao2);
 };
-// Desenhar gráfico no canvas
-function desenharGrafico(dados) {
+// Desenhar gráfico de duas dimensões (barras agrupadas)
+function desenharGraficoDuasDimensoes(dados, dim1, dim2) {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    var larguraBarra = 40;
-    var espacamento = 20;
+    var chaves1 = Object.keys(dados);
+    var chaves2 = [];
+    chaves1.forEach(function (k1) {
+        Object.keys(dados[k1]).forEach(function (k2) {
+            if (chaves2.indexOf(k2) === -1)
+                chaves2.push(k2);
+        });
+    });
+    var larguraBarra = 20;
+    var espacamento = 10;
+    var grupoEspaco = 40;
     var alturaMax = 300;
-    var maxQuantidade = getMaxQuantidade(dados);
-    for (var i = 0; i < dados.length; i++) {
-        var altura = (dados[i].quantidade / maxQuantidade) * alturaMax;
-        var x = i * (larguraBarra + espacamento) + 50;
-        var y = canvas.height - altura - 30;
-        ctx.fillStyle = "steelblue";
-        ctx.fillRect(x, y, larguraBarra, altura);
-        // Texto chave
+    var margemInferior = 50; // aumenta espaço inferior para nomes ficarem bem embaixo
+
+    // Descobrir o máximo
+    var maxQuantidade = 0;
+    chaves1.forEach(function (k1) {
+        chaves2.forEach(function (k2) {
+            if (dados[k1][k2] && dados[k1][k2] > maxQuantidade) {
+                maxQuantidade = dados[k1][k2];
+            }
+        });
+    });
+
+    // Desenhar barras
+    for (var i = 0; i < chaves1.length; i++) {
+        for (var j = 0; j < chaves2.length; j++) {
+            var quantidade = dados[chaves1[i]][chaves2[j]] || 0;
+            var altura = maxQuantidade > 0 ? (quantidade / maxQuantidade) * alturaMax : 0;
+            var x = i * (chaves2.length * (larguraBarra + espacamento) + grupoEspaco) + j * (larguraBarra + espacamento) + 50;
+            var y = canvas.height - altura - margemInferior;
+            ctx.fillStyle = ["#4682b4", "#ff7f50", "#90ee90", "#ffd700", "#d2691e"][j % 5];
+            ctx.fillRect(x, y, larguraBarra, altura);
+            ctx.fillStyle = "black";
+            ctx.fillText(quantidade, x, y - 5);
+        }
+        // Nome do grupo principal (dimensão X)
         ctx.fillStyle = "black";
-        ctx.fillText(dados[i].chave, x, canvas.height - 10);
-        // Quantidade
-        ctx.fillText(dados[i].quantidade.toString(), x, y - 5);
+        ctx.textAlign = "center";
+        var xGrupo = i * (chaves2.length * (larguraBarra + espacamento) + grupoEspaco) + (chaves2.length * (larguraBarra + espacamento)) / 2 + 50 - espacamento;
+        ctx.fillText(chaves1[i], xGrupo, canvas.height - 30); // bem embaixo
     }
+
+    // Nome da dimensão Y 
+    ctx.save();
+    ctx.fillStyle = "black";
+    ctx.textAlign = "center";
+    ctx.font = "16px Arial";
+    ctx.translate(20, canvas.height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(dim2, 0, 0);
+    ctx.restore();
+
+    // Nome da dimensão X 
+    ctx.save();
+    ctx.fillStyle = "black";
+    ctx.textAlign = "center";
+    ctx.font = "16px Arial";
+    ctx.fillText(dim1, canvas.width / 2, canvas.height - 10);
+    ctx.restore();
+
+    // Legenda para as cores (o quadradinho que fica lá em cima)
+    for (var j = 0; j < chaves2.length; j++) {
+        ctx.fillStyle = ["#4682b4", "#ff7f50", "#90ee90", "#ffd700", "#d2691e"][j % 5];
+        ctx.fillRect(60 + j * 100, 10, 15, 15);
+        ctx.fillStyle = "black";
+        ctx.textAlign = "left";
+        ctx.fillText(chaves2[j], 80 + j * 100, 22);
+    }
+    ctx.textAlign = "left"; // Reset align
 }
+// Função auxiliar para gráfico de UMA Dimensão (não usada no momento)
+// function desenharGrafico(dados) {
+//     var canvas = document.getElementById("canvas");
+//     var ctx = canvas.getContext("2d");
+//     ctx.clearRect(0, 0, canvas.width, canvas.height);
+//     var larguraBarra = 40;
+//     var espacamento = 20;
+//     var alturaMax = 300;
+//     var maxQuantidade = getMaxQuantidade(dados);
+//     for (var i = 0; i < dados.length; i++) {
+//         var altura = (dados[i].quantidade / maxQuantidade) * alturaMax;
+//         var x = i * (larguraBarra + espacamento) + 50;
+//         var y = canvas.height - altura - 30;
+//         ctx.fillStyle = "steelblue";
+//         ctx.fillRect(x, y, larguraBarra, altura);
+//         // Texto chave
+//         ctx.fillStyle = "black";
+//         ctx.fillText(dados[i].chave, x, canvas.height - 10);
+//         // Quantidade
+//         ctx.fillText(dados[i].quantidade.toString(), x, y - 5);
+//     }
+// }
+
+// Função auxiliar para obter o máximo de quantidade
 function getMaxQuantidade(dados) {
     var max = 0;
     for (var i = 0; i < dados.length; i++) {

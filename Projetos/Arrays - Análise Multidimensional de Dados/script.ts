@@ -75,6 +75,20 @@ class CuboDeAnalise {
 
     return resultado;
   }
+
+  // Agrupa as vendas por duas dimensões e soma as quantidades
+  agruparPorDuasDimensoes(dim1: string, dim2: string): { [chave1: string]: { [chave2: string]: number } } {
+    const resultado: { [chave1: string]: { [chave2: string]: number } } = {};
+    for (let i = 0; i < this.vendas.length; i++) {
+      const v = this.vendas[i];
+      const chave1 = (v as any)[dim1].toString();
+      const chave2 = (v as any)[dim2].toString();
+      if (!resultado[chave1]) resultado[chave1] = {};
+      if (!resultado[chave1][chave2]) resultado[chave1][chave2] = 0;
+      resultado[chave1][chave2] += v.quantidade;
+    }
+    return resultado;
+  }
 }
 
 // Instância única do cubo
@@ -101,13 +115,17 @@ formVenda.onsubmit = (e) => {
 // Gerar gráfico
 const btnGerar = document.getElementById("gerarGrafico") as HTMLButtonElement;
 btnGerar.onclick = () => {
-  const dimensao = (document.getElementById("dimensaoX") as HTMLSelectElement).value;
-  const dados = cubo.agruparPorDimensao(dimensao);
-
-  desenharGrafico(dados);
+  const dimensao1 = (document.getElementById("dimensaoX") as HTMLSelectElement).value;
+  const dimensao2 = (document.getElementById("dimensaoY") as HTMLSelectElement).value;
+  if (dimensao1 === dimensao2) {
+    alert("Selecione dimensões diferentes para X e Y.");
+    return;
+  }
+  const dados = cubo.agruparPorDuasDimensoes(dimensao1, dimensao2);
+  desenharGraficoDuasDimensoes(dados, dimensao1, dimensao2);
 };
 
-// Desenhar gráfico no canvas
+// Gráfico de uma dimensão (caso queira usar)
 function desenharGrafico(dados: { chave: string, quantidade: number }[]): void {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
@@ -143,4 +161,53 @@ function getMaxQuantidade(dados: { chave: string, quantidade: number }[]): numbe
     }
   }
   return max;
+}
+
+// Gráfico de duas dimensões (barras agrupadas)
+function desenharGraficoDuasDimensoes(
+  dados: { [chave1: string]: { [chave2: string]: number } },
+  dim1: string,
+  dim2: string
+): void {
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d")!;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const chaves1 = Object.keys(dados);
+  const chaves2: string[] = [];
+  chaves1.forEach(k1 => {
+    Object.keys(dados[k1]).forEach(k2 => {
+      if (!chaves2.includes(k2)) chaves2.push(k2);
+    });
+  });
+
+  const larguraBarra = 20;
+  const espacamento = 10;
+  const grupoEspaco = 40;
+  const alturaMax = 300;
+
+  // Descobrir o máximo
+  let maxQuantidade = 0;
+  chaves1.forEach(k1 => {
+    chaves2.forEach(k2 => {
+      if (dados[k1][k2] && dados[k1][k2] > maxQuantidade) {
+        maxQuantidade = dados[k1][k2];
+      }
+    });
+  });
+
+  for (let i = 0; i < chaves1.length; i++) {
+    for (let j = 0; j < chaves2.length; j++) {
+      const quantidade = dados[chaves1[i]][chaves2[j]] || 0;
+      const altura = maxQuantidade > 0 ? (quantidade / maxQuantidade) * alturaMax : 0;
+      const x = i * (chaves2.length * (larguraBarra + espacamento) + grupoEspaco) + j * (larguraBarra + espacamento) + 50;
+      const y = canvas.height - altura - 30;
+      ctx.fillStyle = ["#4682b4", "#ff7f50", "#90ee90", "#ffd700", "#d2691e"][j % 5];
+      ctx.fillRect(x, y, larguraBarra, altura);
+      ctx.fillStyle = "black";
+      ctx.fillText(quantidade.toString(), x, y - 5);
+    }
+    // Nome do grupo principal
+    ctx.fillText(chaves1[i], i * (chaves2.length * (larguraBarra + espacamento) + grupoEspaco) + 50, canvas.height - 10);
+  }
 }
