@@ -1,0 +1,71 @@
+#form-venda-container {
+    display: none;
+    margin: 20px;
+}
+
+.title {
+    padding: 20px 20px;
+    color: #1E1E1E;
+}
+
+#formVenda {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-areas:
+        "ano mes"
+        "filial categoria"
+        "autor quantidade"
+        "venda-btn venda-btn";
+    gap: 20px;
+    padding: 20px 20px;
+}
+
+#ano {
+    grid-area: ano;
+}
+
+#mes {
+    grid-area: mes;
+}
+
+#filial {
+    grid-area: filial;
+}
+
+#categoria {
+    grid-area: categoria;
+}
+
+#autor {
+    grid-area: autor;
+}
+
+#quantidade {
+    grid-area: quantidade;
+}
+
+#venda-btn {
+    grid-area: venda-btn;
+    font-size: medium;
+    color: #f8f8f8;
+    background-color: #44ADC7;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#venda-btn:hover{
+    background-color: #6fbbce;
+}
+
+#formVenda input {
+    width: 400px;
+    height: 40px;
+    outline: none;
+    border: 1px solid #cdcdcd;
+    border-radius: 8px;
+    padding: 10px;
+    color: #1E1E1E;
+    background-color: #eaeaea;
+}

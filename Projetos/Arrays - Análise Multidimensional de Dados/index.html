@@ -1,54 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="./css/style.css" />
   <title>Análise Multidimensional de Vendas</title>
-  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <h1>Análise Multidimensional de Vendas - Livraria</h1>
+  <header>
+    <nav id="sidebar">
+      <div id="sidebar-content">
+        <div id="logo-container">
+          <div id="logo">
+            <a href="#">
+              <i class="fa-solid fa-chart-simple"></i>
+            </a>
+          </div>
+          <h1 id="brand-name">Marca</h1>
+        </div>
 
-  <section>
-    <h2>Cadastro de Venda</h2>
-    <form id="formVenda">
-      <input type="number" id="ano" placeholder="Ano" required>
-      <input type="number" id="mes" placeholder="Mês" required>
-      <input type="text" id="filial" placeholder="Filial" required>
-      <input type="text" id="categoria" placeholder="Categoria" required>
-      <input type="text" id="autor" placeholder="Autor" required>
-      <input type="number" id="quantidade" placeholder="Quantidade" required>
-      <button type="submit">Adicionar Venda</button>
-    </form>
-  </section>
+        <ul id="side-items">
+          <li class="side-item active">
+            <a href="./index.html">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>Análises</span>
+            </a>
+          </li>
+          <li class="side-item">
+            <a href="#">
+              <i class="fa-solid fa-cart-shopping"></i>
+              <span>Vendas</span>
+            </a>
+          </li>
+          <li class="side-item">
+            <a href="#">
+              <i class="fa-solid fa-gear"></i>
+              <span>Configurações</span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
-  <section>
-    <h2>Análise e Gráfico</h2>
-    <div style="margin-top:20px;">
-      <label for="dimensaoX">Dimensão X:</label>
-      <select id="dimensaoX">
-        <option value="filial">Filial</option>
-        <option value="categoria">Categoria</option>
-        <option value="autor">Autor</option>
-        <option value="mes">Mês</option>
-        <option value="ano">Ano</option>
-      </select>
+      <div id="logout">
+        <button id="logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span class="logout-btn-text">Sair</span>
+        </button>
+      </div>
+    </nav>
+  </header>
 
-      <label for="dimensaoY">Dimensão Y:</label>
-      <select id="dimensaoY">
-        <option value="filial">Filial</option>
-        <option value="categoria">Categoria</option>
-        <option value="autor">Autor</option>
-        <option value="mes">Mês</option>
-        <option value="ano">Ano</option>
-      </select>
+  <main class="margin">
+    <header>
+      <h1 class="title">Análise Multidimensional de Vendas - Livraria</h1>
+      <button id="addVenda-btn">
+        <span class="addVenda-btn-text">Adicionar Venda</span>
+      </button>
+    </header>
 
-      <button type="button" id="gerarGrafico">Gerar Gráfico</button>
-    </div>
+    <section id="analise-container">
+      <h2 class="title">Análise e Gráfico</h2>
+      <div class="margin">
+        <label for="dimensaoX">Dimensão X:</label>
+        <select id="dimensaoX">
+          <option value="filial">Filial</option>
+          <option value="categoria">Categoria</option>
+          <option value="autor">Autor</option>
+          <option value="mes">Mês</option>
+          <option value="ano">Ano</option>
+        </select>
 
-    <canvas id="canvas" width="900" height="400" style="border:1px solid #ccc;margin-top:20px;"></canvas>
-  </section>
+        <label for="dimensaoY">Dimensão Y:</label>
+        <select id="dimensaoY">
+          <option value="filial">Filial</option>
+          <option value="categoria">Categoria</option>
+          <option value="autor">Autor</option>
+          <option value="mes">Mês</option>
+          <option value="ano">Ano</option>
+        </select>
 
-  <script src="script.js"></script>
-  
+        <button type="button" id="gerarGrafico">Gerar Gráfico</button>
+
+        <div>
+          <button>
+            <a>
+              <i class="fa-solid fa-cloud-arrow-down"></i>
+            </a>
+            <span>Download</span>
+          </button>
+        </div>
+      </div>
+
+      <canvas id="canvas" width="900" height="400" style="border:1px solid #ccc;margin: 20px 0px 0px 20px"></canvas>
+    </section>
+
+    <section id="form-venda-container">
+      <h2 id="title">Cadastro de Venda</h2>
+      <form id="formVenda">
+        <input type="number" id="ano" placeholder="Ano" required>
+        <input type="number" id="mes" placeholder="Mês" required>
+        <input type="text" id="filial" placeholder="Filial" required>
+        <input type="text" id="categoria" placeholder="Categoria" required>
+        <input type="text" id="autor" placeholder="Autor" required>
+        <input type="number" id="quantidade" placeholder="Quantidade" required>
+        <button id="venda-btn" type="submit">Adicionar Venda</button>
+      </form>
+
+      <section id="mensagemVenda"></section>
+    </section>
+  </main>
+  <script src="index.js"></script>
+
 </body>
+
 </html>
