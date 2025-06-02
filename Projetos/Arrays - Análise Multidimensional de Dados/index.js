@@ -19,6 +19,7 @@ var Venda = /** @class */ (function () {
     }
     return Venda;
 }());
+
 // Classe CuboDeAnalise
 var CuboDeAnalise = /** @class */ (function () {
     function CuboDeAnalise() {
@@ -32,55 +33,7 @@ var CuboDeAnalise = /** @class */ (function () {
         novoArray[this.vendas.length] = venda;
         this.vendas = novoArray;
     };
-    // Agrupa as vendas por uma dimensão e soma as quantidades
-    CuboDeAnalise.prototype.agruparPorDimensao = function (dim) {
-        var resultado = new Array(0);
-        for (var i = 0; i < this.vendas.length; i++) {
-            var v = this.vendas[i];
-            var chave = "";
-            switch (dim) {
-                case "filial":
-                    chave = v.filial;
-                    break;
-                case "categoria":
-                    chave = v.categoria;
-                    break;
-                case "autor":
-                    chave = v.autor;
-                    break;
-                case "mes":
-                    chave = v.mes.toString();
-                    break;
-                case "ano":
-                    chave = v.ano.toString();
-                    break;
-                default:
-                    chave = "";
-                    break;
-            }
-            var encontrado = false;
-            for (var j = 0; j < resultado.length; j++) {
-                if (resultado[j].chave === chave) {
-                    resultado[j].quantidade += v.quantidade;
-                    encontrado = true;
-                    break;
-                }
-            }
-            if (!encontrado) {
-                // adicionar novo agrupamento
-                var novoArray = new Array(resultado.length + 1);
-                for (var j = 0; j < resultado.length; j++) {
-                    novoArray[j] = resultado[j];
-                }
-                novoArray[resultado.length] = { chave: chave, quantidade: v.quantidade };
-                resultado.length = novoArray.length;
-                for (var j = 0; j < novoArray.length; j++) {
-                    resultado[j] = novoArray[j];
-                }
-            }
-        }
-        return resultado;
-    };
+
     // Agrupa as vendas por duas dimensões e soma as quantidades
     CuboDeAnalise.prototype.agruparPorDuasDimensoes = function (dim1, dim2) {
         var resultado = {};
@@ -98,6 +51,7 @@ var CuboDeAnalise = /** @class */ (function () {
     };
     return CuboDeAnalise;
 }());
+
 // Instância única do cubo
 var cubo = new CuboDeAnalise();
 // Cadastro de vendas
@@ -113,12 +67,17 @@ formVenda.onsubmit = function (e) {
     var quantidade = parseInt(document.getElementById("quantidade").value);
     var venda = new Venda(ano, mes, filial, categoria, autor, quantidade);
     cubo.adicionarVenda(venda);
+
+    //mensagem  rafa
     mensagemVenda.textContent = "Venda cadastrada com sucesso!";
     formVenda.reset();
+
+    //mensagem rafa
     analiseSection.style.display = "block";
     mainHeader.style.display = "block";
     formVendaContainer.style.display = "none";
 };
+
 // Gerar gráfico
 var btnGerar = document.getElementById("gerarGrafico");
 btnGerar.onclick = function () {
@@ -131,28 +90,7 @@ btnGerar.onclick = function () {
     var dados = cubo.agruparPorDuasDimensoes(dimensao1, dimensao2);
     desenharGraficoDuasDimensoes(dados, dimensao1, dimensao2);
 };
-// Gráfico de uma dimensão
-function desenharGrafico(dados) {
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    var larguraBarra = 40;
-    var espacamento = 20;
-    var alturaMax = 300;
-    var maxQuantidade = getMaxQuantidade(dados);
-    for (var i = 0; i < dados.length; i++) {
-        var altura = (dados[i].quantidade / maxQuantidade) * alturaMax;
-        var x = i * (larguraBarra + espacamento) + 50;
-        var y = canvas.height - altura - 30;
-        ctx.fillStyle = "steelblue";
-        ctx.fillRect(x, y, larguraBarra, altura);
-        // Texto chave
-        ctx.fillStyle = "black";
-        ctx.fillText(dados[i].chave, x, canvas.height - 10);
-        // Quantidade
-        ctx.fillText(dados[i].quantidade.toString(), x, y - 5);
-    }
-}
+
 function getMaxQuantidade(dados) {
     var max = 0;
     for (var i = 0; i < dados.length; i++) {
@@ -188,18 +126,52 @@ function desenharGraficoDuasDimensoes(dados, dim1, dim2) {
             }
         });
     });
+    // Desenhar barras
     for (var i = 0; i < chaves1.length; i++) {
         for (var j = 0; j < chaves2.length; j++) {
             var quantidade = dados[chaves1[i]][chaves2[j]] || 0;
             var altura = maxQuantidade > 0 ? (quantidade / maxQuantidade) * alturaMax : 0;
             var x = i * (chaves2.length * (larguraBarra + espacamento) + grupoEspaco) + j * (larguraBarra + espacamento) + 50;
-            var y = canvas.height - altura - 30;
+            var y = canvas.height - altura - 30; 
             ctx.fillStyle = ["#4682b4", "#ff7f50", "#90ee90", "#ffd700", "#d2691e"][j % 5];
             ctx.fillRect(x, y, larguraBarra, altura);
             ctx.fillStyle = "black";
-            ctx.fillText(quantidade.toString(), x, y - 5);
+            ctx.fillText(quantidade, x, y - 5);
         }
-        // Nome do grupo principal
-        ctx.fillText(chaves1[i], i * (chaves2.length * (larguraBarra + espacamento) + grupoEspaco) + 50, canvas.height - 10);
+        // Nome do grupo principal (dimensão X)
+        ctx.fillStyle = "black";
+        ctx.textAlign = "center";
+        var xGrupo = i * (chaves2.length * (larguraBarra + espacamento) + grupoEspaco) + (chaves2.length * (larguraBarra + espacamento)) / 2 + 50 - espacamento;
+        ctx.fillText(chaves1[i], xGrupo, canvas.height - 30); // bem embaixo
     }
+
+    // Nome da dimensão Y 
+    ctx.save();
+    ctx.fillStyle = "black";
+    ctx.textAlign = "center";
+    ctx.font = "16px Arial";
+    ctx.translate(20, canvas.height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(dim2, 0, 0);
+    ctx.restore();
+
+    // Nome da dimensão X 
+    ctx.save();
+    ctx.fillStyle = "black";
+    ctx.textAlign = "center";
+    ctx.font = "16px Arial";
+    ctx.fillText(dim1, canvas.width / 2, canvas.height - 10);
+    ctx.restore();
+
+    // Legenda para as cores (o quadradinho que fica lá em cima)
+    for (var j = 0; j < chaves2.length; j++) {
+        ctx.fillStyle = ["#4682b4", "#ff7f50", "#90ee90", "#ffd700", "#d2691e"][j % 5];
+        ctx.fillRect(60 + j * 100, 10, 15, 15);
+        ctx.fillStyle = "black";
+        ctx.textAlign = "left";
+        ctx.fillText(chaves2[j], 80 + j * 100, 22);
+    
+         } 
+    ctx.textAlign = "left"; // Reset align
 }
+    
