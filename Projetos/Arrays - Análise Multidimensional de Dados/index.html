@@ -9,63 +9,64 @@
 </head>
 
 <body>
-  <header>
-    <nav id="sidebar">
-      <div id="sidebar-content">
-        <div id="logo-container">
-          <div id="logo">
-            <a href="#">
-              <i class="fa-solid fa-chart-simple"></i>
-            </a>
-          </div>
-          <h1 id="brand-name">Marca</h1>
+  <nav id="sidebar">
+    <div id="sidebar-content">
+      <div id="logo-container">
+        <div id="logo">
+          <a href="#">
+            <i class="fa-solid fa-chart-simple"></i>
+          </a>
         </div>
-
-        <ul id="side-items">
-          <li class="side-item active">
-            <a href="./index.html">
-              <i class="fa-solid fa-chart-line"></i>
-              <span>Análises</span>
-            </a>
-          </li>
-          <li class="side-item">
-            <a href="#">
-              <i class="fa-solid fa-cart-shopping"></i>
-              <span>Vendas</span>
-            </a>
-          </li>
-          <li class="side-item">
-            <a href="#">
-              <i class="fa-solid fa-gear"></i>
-              <span>Configurações</span>
-            </a>
-          </li>
-        </ul>
+        <h1 id="brand-name">LitData</h1>
       </div>
 
-      <div id="logout">
-        <button id="logout-btn">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span class="logout-btn-text">Sair</span>
-        </button>
-      </div>
-    </nav>
-  </header>
+      <ul id="side-items">
+        <li class="side-item active">
+          <a href="./index.html">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Análises</span>
+          </a>
+        </li>
+        <li class="side-item">
+          <a href="#">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Vendas</span>
+          </a>
+        </li>
+        <li class="side-item">
+          <a href="#">
+            <i class="fa-solid fa-gear"></i>
+            <span>Configurações</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="logout">
+      <button id="logout-btn">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span class="logout-btn-text">Sair</span>
+      </button>
+    </div>
+  </nav>
 
   <main class="margin">
-  <header>
-    <h1 class="title">Análise Multidimensional de Vendas - Livraria</h1>
-    <button id="addVenda-btn">
-      <span class="addVenda-btn-text">Adicionar Venda</span>
-    </button>
-    <!-- <button id="carregarTeste-btn">
-      <span class="addVenda-btn-text">Carregar Vendas de Teste</span>
-    </button> -->
-  </header>
+    <header>
+      <h1 class="title">Análise Multidimensional de Vendas - Livraria</h1>
+      <div id="header-btns">
+        <button id="addVenda-btn">
+          <span class="addVenda-btn-text">Adicionar Venda</span>
+        </button>
+        <!--<button id="carregarVendas-btn">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span class="carregarVenda-btn-text">Vendas</span>
+        </button>-->
+      </div>
+    </header>
 
 
     <section id="analise-container">
-      <h2 class="title">Análise e Gráfico</h2>
+      <h2 class="title text2">Análise e Gráfico</h2>
       <div class="margin">
         <label for="dimensaoX">Dimensão X:</label>
         <select id="dimensaoX">
@@ -85,19 +86,10 @@
           <option value="ano">Ano</option>
         </select>
 
-        <button type="button" id="gerarGrafico">Gerar Gráfico</button>
-
-        <div>
-          <button>
-            <a>
-              <i class="fa-solid fa-cloud-arrow-down"></i>
-            </a>
-            <span>Download</span>
-          </button>
-        </div>
+          <button type="button" id="gerarGrafico">Gerar Gráfico</button>
       </div>
 
-      <canvas id="canvas" width="900" height="400" style="border:1px solid #ccc;margin: 20px 0px 0px 20px"></canvas>
+      <canvas id="canvas" width="900" height="400"></canvas>
     </section>
 
     <section id="form-venda-container">
@@ -111,8 +103,6 @@
         <input type="number" id="quantidade" placeholder="Quantidade" required>
         <button id="venda-btn" type="submit">Adicionar Venda</button>
       </form>
-
-      <section id="mensagemVenda"></section>
     </section>
   </main>
   <script src="index.js"></script>
