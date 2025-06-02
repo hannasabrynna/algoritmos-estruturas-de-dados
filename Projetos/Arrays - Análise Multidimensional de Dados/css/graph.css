@@ -1,0 +1,13 @@
+canvas input,
+select {
+    margin-bottom: 20px;
+}
+
+
+canvas {
+    border-radius: 10px;
+    border: none;
+    background-color: #fff;
+    margin: 20px 0px 0px 20px;
+    box-shadow: 0 2px 4px rgb(192, 192, 192);
+}

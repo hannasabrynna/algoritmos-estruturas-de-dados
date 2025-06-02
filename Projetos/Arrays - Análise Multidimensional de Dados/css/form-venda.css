@@ -18,7 +18,7 @@
         "autor quantidade"
         "venda-btn venda-btn";
     gap: 20px;
-    padding: 20px 20px;
+    padding: 20px 0 20px 0;
 }
 
 #ano {

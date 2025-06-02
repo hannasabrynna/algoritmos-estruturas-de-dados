@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Encode+Sans+Semi+Condensed:wght@100;200;300;400;500;600;700;800;900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playwrite+DE+Grund:wght@100..400&family=Roboto:ital,wght@0,100..900;1,100..900&family=Shippori+Mincho+B1&display=swap');
 @import url('form-venda.css');
+@import url('graph.css');
 
 * {
   margin: 0;
@@ -58,7 +59,7 @@ main {
 }
 
 #brand-name {
-  color: #686868;
+  color: #001f3e;
 }
 
 #side-items {
@@ -127,30 +128,153 @@ main {
 
 main > header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+#header-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+#addVenda-btn {
+  width: 150px;
+  height: 40px;
+  font-size: medium;
+  color: #f8f8f8;
+  background-color: #44ADC7;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#addVenda-btn:hover {
+  background-color: #6fbbce;
+}
+
+#carregarVendas-btn {
+  width: 100px;
+  height: 40px;
+  font-size: medium;
+  color: #f8f8f8;
+  background-color: #44ADC7;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#carregarVendas-btn:hover {
+  background-color: #6fbbce;
 }
 
 .title {
   padding: 20px 20px;
+  color: #001f3e;
+}
+
+#analise-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#analise-content {
+  gap: 50px;
+}
+
+#dimensaoX {
+  width: 140px;
+  height: 40px;
+  padding: 8px;
+  font-size: medium;
+  color: #44ADC7;
+  font-weight: 600;
+  background-color: #F8F8FF;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  box-shadow:  0 1px 3px rgb(192, 192, 192);
+  cursor: pointer;
+}
+
+#dimensaoY {
+  width: 140px;
+  height: 40px;
+  padding: 8px;
+  font-size: medium;
+  color: #44ADC7;
+  font-weight: 600;
+  background-color: #F8F8FF;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  box-shadow:  0 1px 3px rgb(192, 192, 192);
+  cursor: pointer;
+}
+
+#gerarGrafico {
+  width: 140px;
+  height: 40px;
+  font-size: medium;
+  color: #44ADC7;
+  font-weight: 600;
+  background-color: #F8F8FF;
+  border: none;
+  border-radius: 10px;
+  box-shadow:  0 1px 3px rgb(192, 192, 192);
+  cursor: pointer;
+}
+
+@media (max-width: 992px) {
+
+  #header-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#addVenda-btn {
+  width: 140px;
+  height: 40px;
+  font-size: medium;
+  color: #f8f8f8;
+  background-color: #44ADC7;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#addVenda-btn:hover {
+  background-color: #6fbbce;
+}
+
+#carregarVendas-btn {
+  width: 100px;
+  height: 40px;
+  font-size: medium;
+  color: #f8f8f8;
+  background-color: #44ADC7;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#carregarVendas-btn:hover {
+  background-color: #6fbbce;
+}
+
+.title {
+  font-size: 30px;
   color: #1E1E1E;
 }
 
-
-canvas
-input,
-select {
-  margin-bottom: 10px;
+.text2 {
+  font-size: 20px;
 }
 
-#mensagemVenda {
-  margin: 10px 0px 0px 0px;
-  color: #333;
-  font-weight: medium;
-  border-radius: 10px;
-}
-
-canvas {
-  border: 1px solid #ccc;
-  background-color: #fff;
-  margin-top: 10px;
 }
