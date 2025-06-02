@@ -1,0 +1,40 @@
+DADOS TESTES:
+
+Passo 1: No HTML no <header>:
+
+<header>
+  <h1 class="title">Análise Multidimensional de Vendas - Livraria</h1>
+  <button id="addVenda-btn">
+    <span class="addVenda-btn-text">Adicionar Venda</span>
+  </button>
+
+  //DESCOMENTAR BOTÂO
+
+  <button id="carregarTeste-btn">
+    <span class="addVenda-btn-text">Carregar Vendas de Teste</span>
+  </button>
+
+</header>
+
+
+Passo 2: COLAR NO FIM DO ARQUIVO JAVASCRIPT:
+
+
+// === Carregar dados de teste ===
+document.getElementById("carregarTeste-btn").addEventListener("click", function () {
+    const vendasTeste = [
+        new Venda(2025, 1, "São Paulo", "Romance", "Machado de Assis", 15),
+        new Venda(2025, 1, "Rio de Janeiro", "Suspense", "Agatha Christie", 10),
+        new Venda(2025, 2, "São Paulo", "Ficção Científica", "Isaac Asimov", 12),
+        new Venda(2025, 2, "Belo Horizonte", "Romance", "Jane Austen", 8),
+        new Venda(2025, 3, "Rio de Janeiro", "Fantasia", "J.K. Rowling", 18),
+        new Venda(2025, 3, "São Paulo", "Suspense", "Stephen King", 9),
+        new Venda(2025, 4, "Curitiba", "Romance", "Machado de Assis", 11),
+        new Venda(2025, 4, "Belo Horizonte", "Ficção Científica", "Arthur C. Clarke", 7),
+        new Venda(2025, 5, "São Paulo", "Fantasia", "J.R.R. Tolkien", 13),
+        new Venda(2025, 5, "Curitiba", "Suspense", "Agatha Christie", 6)
+    ];
+
+    vendasTeste.forEach(v => cubo.adicionarVenda(v));
+    alert("Vendas de teste carregadas!");
+});
