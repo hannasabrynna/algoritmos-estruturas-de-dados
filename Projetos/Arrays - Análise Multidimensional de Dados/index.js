@@ -55,7 +55,6 @@ var CuboDeAnalise = /** @class */ (function () {
 var cubo = new CuboDeAnalise();
 // Formulário de vendas
 var formVenda = document.getElementById("formVenda");
-var mensagemVenda = document.getElementById("mensagemVenda");
 formVenda.onsubmit = function (e) {
     e.preventDefault();
     var ano = parseInt(document.getElementById("ano").value);
@@ -66,7 +65,7 @@ formVenda.onsubmit = function (e) {
     var quantidade = parseInt(document.getElementById("quantidade").value);
     var venda = new Venda(ano, mes, filial, categoria, autor, quantidade);
     cubo.adicionarVenda(venda);
-    mensagemVenda.textContent = "Venda cadastrada com sucesso!";
+    alert("Venda cadastrada com sucesso!");
     formVenda.reset();
     analiseSection.style.display = "block";
     mainHeader.style.display = "block";
@@ -167,13 +166,13 @@ function desenharGraficoDuasDimensoes(dados, dim1, dim2) {
     ctx.fillStyle = "black";
     ctx.textAlign = "center";
     ctx.font = "16px Arial";
-    ctx.fillText(dim1, canvas.width / 2, canvas.height - 10);
+    ctx.fillText(dim1, canvas.width / 2, canvas.height - 8);
     ctx.restore();
     // Legenda
     for (var j = 0; j < chaves2.length; j++) {
         ctx.fillStyle = ["#4682b4", "#ff7f50", "#90ee90", "#ffd700", "#d2691e"][j % 5];
         ctx.fillRect(60 + j * 100, 10, 15, 15);
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "#1E1E1E";
         ctx.textAlign = "left";
         ctx.fillText(chaves2[j], 80 + j * 100, 22);
     }

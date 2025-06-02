@@ -72,7 +72,6 @@ const cubo = new CuboDeAnalise();
 
 // Formulário de vendas
 const formVenda = document.getElementById("formVenda") as HTMLFormElement;
-const mensagemVenda = document.getElementById("mensagemVenda") as HTMLElement;
 
 formVenda.onsubmit = function (e: Event): void {
     e.preventDefault();
@@ -87,7 +86,7 @@ formVenda.onsubmit = function (e: Event): void {
     const venda = new Venda(ano, mes, filial, categoria, autor, quantidade);
     cubo.adicionarVenda(venda);
 
-    mensagemVenda.textContent = "Venda cadastrada com sucesso!";
+    alert ("Venda cadastrada com sucesso!");
     formVenda.reset();
 
     analiseSection.style.display = "block";
@@ -204,14 +203,14 @@ function desenharGraficoDuasDimensoes(
     ctx.fillStyle = "black";
     ctx.textAlign = "center";
     ctx.font = "16px Arial";
-    ctx.fillText(dim1, canvas.width / 2, canvas.height - 10);
+    ctx.fillText(dim1, canvas.width / 2, canvas.height - 8);
     ctx.restore();
 
     // Legenda
     for (let j = 0; j < chaves2.length; j++) {
         ctx.fillStyle = ["#4682b4", "#ff7f50", "#90ee90", "#ffd700", "#d2691e"][j % 5];
         ctx.fillRect(60 + j * 100, 10, 15, 15);
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "#1E1E1E";
         ctx.textAlign = "left";
         ctx.fillText(chaves2[j], 80 + j * 100, 22);
     }

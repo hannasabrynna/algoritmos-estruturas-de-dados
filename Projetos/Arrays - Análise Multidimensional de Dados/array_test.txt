@@ -10,8 +10,8 @@ Passo 1: No HTML no <header>:
 
   //DESCOMENTAR BOTÂO
 
-  <button id="carregarTeste-btn">
-    <span class="addVenda-btn-text">Carregar Vendas de Teste</span>
+  <button id="carregarVendas-btn">
+    <span class="carregarVenda-btn-text">Carregar Vendas de Teste</span>
   </button>
 
 </header>
@@ -21,7 +21,7 @@ Passo 2: COLAR NO FIM DO ARQUIVO JAVASCRIPT:
 
 
 // === Carregar dados de teste ===
-document.getElementById("carregarTeste-btn").addEventListener("click", function () {
+document.getElementById("carregarVendas-btn").addEventListener("click", function () {
     const vendasTeste = [
         new Venda(2025, 1, "São Paulo", "Romance", "Machado de Assis", 15),
         new Venda(2025, 1, "Rio de Janeiro", "Suspense", "Agatha Christie", 10),
