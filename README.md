@@ -4,6 +4,7 @@ Este repositório foi criado com o objetivo de reunir todos os mini projetos des
 ## 📂 Projetos
 
 * [Projeto 01](https://github.com/hannasabrynna/Blog-PHP/tree/main/Projetos/Blog) - Recursividade
+* [Projeto 02](https://github.com/hannasabrynna/algoritmos-estruturas-de-dados/tree/main/Projetos/Arrays%20-%20An%C3%A1lise%20Multidimensional%20de%20Dados) - Arrays
 
 ## 👨‍💻 Desenvolvedores
 
