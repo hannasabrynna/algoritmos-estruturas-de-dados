@@ -7,32 +7,36 @@ use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\AttractionController;
 use Inertia\Inertia;
 
+
+// Página inicial
 Route::get('/', function () {
-    return Inertia::render('Dashboard', [
+    return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+}); 
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->name('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/visitors/create', fn () => Inertia::render('Visitors/Create'));
+    Route::post('/visitors', [VisitorController::class, 'store']);
+
+    Route::get('/attractions/create', fn () => Inertia::render('Attractions/Create'));
+    Route::post('/attractions', [AttractionController::class, 'store']);
+
+    Route::get('/visitors', [VisitorController::class, 'index'])->name('visitors.index');
+    Route::get('/attractions', [AttractionController::class, 'index'])->name('attractions.index');
 });
 
-Route::get('/visitors/create', fn () => Inertia::render('Visitors/Create'));
-Route::post('/visitors', [VisitorController::class, 'store']);
 
-Route::get('/attractions/create', fn () => Inertia::render('Attractions/Create'));
-Route::post('/attractions', [AttractionController::class, 'store']);
-
-Route::get('/visitors', [VisitorController::class, 'index'])->name('visitors.index');
-Route::get('/attractions', [AttractionController::class, 'index'])->name('attractions.index');
 
 require __DIR__.'/auth.php';

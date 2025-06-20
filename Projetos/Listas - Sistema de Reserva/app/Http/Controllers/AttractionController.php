@@ -6,20 +6,26 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Attraction;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 
 class AttractionController extends Controller
 {
     public function index() {
         $attractions = Attraction::all();
-
         return Inertia::render('Attractions/Index', [
-        'attractions' => $attractions
+        'attractions' => $attractions,
+        'user' => Auth::user(),
     ]);
 
     }
 
     public function store(Request $request) {
+
+         if (Auth::user()->role !== 'admin') {
+        abort(403, 'Acesso não autorizado.');
+    }
+    
         $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
