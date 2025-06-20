@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <h2 class="text-xl font-bold mb-4">Register Visitor</h2>
+    <h2 class="text-xl font-bold mb-4">Cadastrar Vistante</h2>
     <VisitorForm />
   </div>
 </template>

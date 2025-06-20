@@ -19,10 +19,15 @@
         </tr>
       </tbody>
     </table>
+
+    <div class="mt-4">
+    <BackButton />
+    </div>
   </div>
 </template>
 
 <script setup>
+import BackButton from '@/Components/BackButton.vue';
 defineProps({
   visitors: Array
 });

@@ -1,3 +1,5 @@
+
+
 <template>
   <div class="p-6">
     <h1 class="text-2xl font-bold mb-4">Attractions List</h1>
@@ -19,10 +21,16 @@
         </tr>
       </tbody>
     </table>
+
+    <div class="mt-4">
+      <BackButton />
+    </div>
   </div>
 </template>
 
 <script setup>
+import { Link } from '@inertiajs/vue3';
+import BackButton from '@/Components/BackButton.vue';
 defineProps({
   attractions: Array
 });
