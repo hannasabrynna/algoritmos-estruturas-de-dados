@@ -1,4 +1,5 @@
 <template>
+  <Navbar />
   <div class="p-6">
     <h1 class="text-2xl font-bold mb-4">Visitors List</h1>
     <table class="min-w-full bg-white shadow rounded">
@@ -28,6 +29,7 @@
 
 <script setup>
 import BackButton from '@/Components/BackButton.vue';
+import Navbar from '@/Components/Navbar.vue';
 defineProps({
   visitors: Array
 });

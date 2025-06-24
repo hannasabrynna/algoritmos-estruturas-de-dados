@@ -1,5 +1,6 @@
 <script setup>
 import AttractionForm from '@/Components/Attractions/AttractionForm.vue';
+import Navbar from '@/Components/Navbar.vue';
 // import  Navbar from '@/Components/Navbar.vue';
 
 </script>

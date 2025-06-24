@@ -1,8 +1,10 @@
 
 
 <template>
+  <Navbar />  
+  
   <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">Attractions List</h1>
+    <h1 class="text-2xl font-bold mb-4">Atrações</h1>
     <table class="min-w-full bg-white shadow rounded">
       <thead>
         <tr class="bg-gray-100 text-left">
@@ -31,6 +33,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import BackButton from '@/Components/BackButton.vue';
+import Navbar from '@/Components/Navbar.vue';
 defineProps({
   attractions: Array
 });
