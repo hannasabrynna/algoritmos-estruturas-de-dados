@@ -69,12 +69,12 @@ function submit() {
 
     <!-- Capacidade por hora -->
     <div>
-      <label for="available_time_slots" class="block text-sm font-medium text-gray-700">Capacidade por hora</label>
+      <label for="available_time_slots" class="block text-sm font-medium text-gray-700">Horarios disponiveis</label>
       <input
         id="available_time_slots"
         v-model="form.available_time_slots"
-        type="number"
-        placeholder="Capacidade por hora"
+        type="text"
+        placeholder="Hoararios disponíveis (ex: 10:00, 11:00)"
         class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         required
       />
@@ -97,6 +97,7 @@ function submit() {
         <option>18 anos</option>
       </select>
     </div>
+
 
     <!-- Priority Access -->
     <div class="flex items-center space-x-2">
