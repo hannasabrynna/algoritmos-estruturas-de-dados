@@ -8,10 +8,11 @@
     <table class="min-w-full bg-white shadow rounded">
       <thead>
         <tr class="bg-gray-100 text-left">
-          <th class="p-2">Name</th>
-          <th class="p-2">Type</th>
-          <th class="p-2">Capacity</th>
-          <th class="p-2">Age Limit</th>
+          <th class="p-2">Nome</th>
+          <th class="p-2">Tipo</th>
+          <th class="p-2">Capacidade</th>
+          <th class="p-2">Idade minima</th>
+          <th class="p-2">Horarios</th>
         </tr>
       </thead>
       <tbody>
@@ -20,6 +21,7 @@
           <td class="p-2">{{ attraction.type }}</td>
           <td class="p-2">{{ attraction.capacity_per_time_slot }}</td>
           <td class="p-2">{{ attraction.minimum_age }}</td>
+          <td class="p-2">{{ attraction.available_time_slots }}</td>
         </tr>
       </tbody>
     </table>
