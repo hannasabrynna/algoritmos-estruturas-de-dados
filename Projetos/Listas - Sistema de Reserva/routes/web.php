@@ -7,6 +7,7 @@ use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\AttractionController;
 use App\Http\Controllers\QueueController;
 use App\Http\Controllers\VisitorPortalController;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 
@@ -45,6 +46,20 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues']);
     Route::get('/portal/visitante/{visitorId}/historico', [VisitorPortalController::class, 'getHistory']);
+
+    Route::view('/fila', 'queue')->name('queue.view');
+
+    Route::post('/fila/entrar', [QueueController::class, 'enterQueue'])->name('queue.enter');
+
+    Route::get('/fila/ver', function (Request $request) {
+        $queue = App\Services\QueueManager::getQueueList($request->attraction_id);
+        dd($queue); // ou exibir em view no futuro
+    })->name('queue.show');
+
+    Route::get('/fila/chamar', function (Request $request) {
+        $visitor = App\Services\QueueManager::callNext($request->attraction_id);
+        dd($visitor); // ou exibir em view no futuro
+    })->name('queue.call-next');
 });
 
 

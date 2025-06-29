@@ -23,9 +23,9 @@ class QueueController extends Controller
         ]);
     }
 
-    public function showQueue($attractionId)
+    public function showQueue(Request $request)
     {
-        $queue = QueueManager::getQueueList($attractionId);
+        $queue = QueueManager::getQueueList((int) $request->attraction_id);
         return response()->json([
             'queue' => array_map(function ($v) {
                 return [
@@ -40,7 +40,6 @@ class QueueController extends Controller
     public function callNext($attractionId)
     {
         $visitor = QueueManager::callNext($attractionId);
-
         if ($visitor) {
             return response()->json([
                 'message' => 'Próximo visitante chamado com sucesso.',
@@ -54,6 +53,7 @@ class QueueController extends Controller
 
         return response()->json(['message' => 'Fila vazia. Nenhum visitante para chamar.'], 404);
     }
+
 
     public function getVisitorPosition(Request $request)
     {

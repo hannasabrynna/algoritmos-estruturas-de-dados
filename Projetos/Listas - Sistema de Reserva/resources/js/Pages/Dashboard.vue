@@ -17,10 +17,17 @@ console.log('User:', page.props.auth.user)
     </h1>
   </div>
 
-  <main class="p-6 space-y-2"> 
+
+
+  <main class="p-6 space-y-2">
     <div class="space-y-2">
       <h2>Confira as atrações do nosso Park</h2>
       <Link href="/attractions" class="text-blue-600 hover:underline">Lista de atrações</Link>
+    </div>
+
+    <div class="space-y-2">
+      <h2>Fila (só pra teste)</h2>
+      <Link href="/fila" class="text-blue-600 hover:underline">Fila</Link>
     </div>
 
   <!-- Só admin vê -->
