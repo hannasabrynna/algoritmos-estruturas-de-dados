@@ -12,8 +12,8 @@
         <div class="card-body m-4">
           <form @submit.prevent="entrarNaFila">
             <div class="m-4">
-              <label for="enter_visitor_id" class="form-label">ID do Visitante</label>
-              <input v-model="form.visitor_id" type="number" id="enter_visitor_id"
+              <label for="enter_visitor_email" class="form-label">Email do Visitante</label>
+              <input v-model="form.visitor_email" type="text" id="enter_visitor_email"
                 class="form-control w-full p-2 rounded border border-gray-300 focus:outline-none" required />
             </div>
             <div class="m-4">
@@ -96,8 +96,8 @@
         <div class="card-body m-4">
           <form @submit.prevent="verPosicao">
             <div class="mb-4">
-              <label for="pos_visitor_id" class="form-label">ID do Visitante</label>
-              <input v-model="positionForm.visitor_id" type="number" id="pos_visitor_id"
+              <label for="pos_visitor_email" class="form-label">Email do Visitante</label>
+              <input v-model="positionForm.visitor_email" type="text" id="pos_visitor_email"
                 class="form-control w-full p-2 rounded border border-gray-300 focus:outline-none" required />
             </div>
             <div class="mb-3">
@@ -146,7 +146,8 @@ const isAdmin = page.props.auth?.user?.role === 'admin';
 
 const form = ref({
   visitor_id: '',
-  attraction_id: ''
+  attraction_id: '',
+  visitor_email: '',
 });
 
 const viewForm = ref({
@@ -159,7 +160,8 @@ const callForm = ref({
 
 const positionForm = ref({
   visitor_id: '',
-  attraction_id: ''
+  attraction_id: '',
+  visitor_email: '',
 });
 
 const positionMessage = ref('');

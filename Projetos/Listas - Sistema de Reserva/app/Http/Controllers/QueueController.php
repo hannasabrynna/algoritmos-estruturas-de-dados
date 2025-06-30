@@ -15,7 +15,12 @@ class QueueController extends Controller
 {
     public function enterQueue(Request $request)
     {
-        $visitor = Visitor::findOrFail($request->visitor_id);
+        // Busca por ID ou e-mail
+        if ($request->has('visitor_email')) {
+            $visitor = Visitor::where('email', $request->visitor_email)->firstOrFail();
+        } else {
+            $visitor = Visitor::findOrFail($request->visitor_id);
+        }
         // $attraction = Attraction::findOrFail($request->attraction_id);
         $attraction = Attraction::whereRaw('LOWER(name) = ?', [strtolower($request->attraction_name)])->firstOrFail();
 
@@ -86,9 +91,16 @@ class QueueController extends Controller
 
     public function getVisitorPosition(Request $request)
     {
-        $request->validate([
-        'visitor_id' => 'required|exists:visitors,id',
-    ]);
+        // Busca por ID ou e-mail
+        if ($request->has('visitor_email')) {
+            $visitor = Visitor::where('email', $request->visitor_email)->firstOrFail();
+            $visitorId = $visitor->id;
+        } else {
+            $request->validate([
+                'visitor_id' => 'required|exists:visitors,id',
+            ]);
+            $visitorId = $request->visitor_id;
+        }
 
     // Permite buscar por nome ou id
         if ($request->has('attraction_name')) {
@@ -101,7 +113,7 @@ class QueueController extends Controller
             $attractionId = $request->attraction_id;
         }
 
-        $position = QueueManager::getVisitorPosition($attractionId, $request->visitor_id);
+        $position = QueueManager::getVisitorPosition($attractionId, $visitorId);
 
         $message = $position !== null
             ? "Você está na posição $position da fila."
