@@ -57,16 +57,23 @@ class QueueController extends Controller
 
     public function getVisitorPosition(Request $request)
     {
-        $request->validate([
-            'visitor_id' => 'required|exists:visitors,id',
-            'attraction_id' => 'required|exists:attractions,id'
-        ]);
+{
+    $request->validate([
+        'visitor_id' => 'required|exists:visitors,id',
+        'attraction_id' => 'required|exists:attractions,id'
+    ]);
 
-        $position = QueueManager::getVisitorPosition($request->attraction_id, $request->visitor_id);
+    $position = QueueManager::getVisitorPosition($request->attraction_id, $request->visitor_id);
 
-        return response()->json([
-            'position' => $position,
-            'message' => $position ? "Você está na posição $position da fila." : "Você não está na fila."
-        ]);
+    $message = $position !== null
+        ? "Você está na posição $position da fila."
+        : "Você não está na fila.";
+
+    return view('queue.index', [
+        'positionMessage' => $message
+    ]);
+}
+
+
     }
 }

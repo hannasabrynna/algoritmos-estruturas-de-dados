@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/fila/entrar', [QueueController::class, 'enterQueue']);
     Route::get('/fila/{attractionId}', [QueueController::class, 'showQueue']);
     Route::post('/fila/{attractionId}/chamar', [QueueController::class, 'callNext']);
-    Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition']);
+    Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition'])->name('queue.position');;
 
     Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues']);
     Route::get('/portal/visitante/{visitorId}/historico', [VisitorPortalController::class, 'getHistory']);
