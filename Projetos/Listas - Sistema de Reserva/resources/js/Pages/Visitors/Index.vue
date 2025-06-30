@@ -1,14 +1,14 @@
 <template>
   <Navbar />
   <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">Visitors List</h1>
+    <h1 class="text-2xl font-bold mb-4">Visitantes</h1>
     <table class="min-w-full bg-white shadow rounded">
       <thead>
         <tr class="bg-gray-100 text-left">
-          <th class="p-2">Name</th>
+          <th class="p-2">Nome</th>
           <th class="p-2">Email</th>
           <th class="p-2">CPF</th>
-          <th class="p-2">Ticket Type</th>
+          <th class="p-2">Tipo de Ingresso</th>
         </tr>
       </thead>
       <tbody>
@@ -20,10 +20,6 @@
         </tr>
       </tbody>
     </table>
-
-    <div class="mt-4">
-    <BackButton />
-    </div>
   </div>
 </template>
 

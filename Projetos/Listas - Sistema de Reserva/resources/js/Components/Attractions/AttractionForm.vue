@@ -24,6 +24,7 @@ function submit() {
 
 <template>
   <form @submit.prevent="submit" class="space-y-6 p-6 bg-white shadow-2xl rounded-lg max-w-md mx-auto">
+    <h2 class="text-xl font-bold mb-4">Cadastrar Atração</h2>
     <!-- Nome -->
     <div>
       <label for="name" class="block text-sm font-medium text-gray-700">Nome</label>
@@ -69,7 +70,7 @@ function submit() {
 
     <!-- Capacidade por hora -->
     <div>
-      <label for="available_time_slots" class="block text-sm font-medium text-gray-700">Horarios disponiveis</label>
+      <label for="available_time_slots" class="block text-sm font-medium text-gray-700">Horários disponíveis</label>
       <input
         id="available_time_slots"
         v-model="form.available_time_slots"
@@ -107,7 +108,7 @@ function submit() {
         v-model="form.has_priority_access"
         class="h-5 w-5 text-blue-500 focus:ring-blue-500"
       />
-      <label for="has_priority_access" class="text-sm text-gray-700">Priority Access</label>
+      <label for="has_priority_access" class="text-sm text-gray-700">Prioridade de Acesso</label>
     </div>
 
     <!-- Botão de Submissão -->

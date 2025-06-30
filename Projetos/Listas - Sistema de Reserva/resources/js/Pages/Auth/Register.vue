@@ -26,7 +26,12 @@ const submit = () => {
     <GuestLayout>
         <Head title="Register" />
 
-        <form @submit.prevent="submit">
+         <div class="mt-8">
+            <h1 class="text-2xl font-bold text-gray-800">Crie sua conta</h1>
+            <p class="text-gray-600 mt-1">Preencha os campos abaixo para se cadastrar</p>
+        </div>
+
+        <form @submit.prevent="submit" class="mt-8">
             <div>
                 <InputLabel for="name" value="Name" />
 
@@ -99,7 +104,7 @@ const submit = () => {
                     :href="route('login')"
                     class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
-                    Already registered?
+                    Já possui cadastro?
                 </Link>
 
                 <PrimaryButton
@@ -107,7 +112,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Register
+                    Cadastre-se
                 </PrimaryButton>
             </div>
         </form>
