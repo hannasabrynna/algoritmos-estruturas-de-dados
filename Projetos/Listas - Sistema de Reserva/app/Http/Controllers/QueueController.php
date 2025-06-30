@@ -16,7 +16,8 @@ class QueueController extends Controller
     public function enterQueue(Request $request)
     {
         $visitor = Visitor::findOrFail($request->visitor_id);
-        $attraction = Attraction::findOrFail($request->attraction_id);
+        // $attraction = Attraction::findOrFail($request->attraction_id);
+        $attraction = Attraction::whereRaw('LOWER(name) = ?', [strtolower($request->attraction_name)])->firstOrFail();
 
         QueueManager::addToQueue($attraction, $visitor);
 
@@ -27,7 +28,15 @@ class QueueController extends Controller
 
     public function showQueue(Request $request)
     {
-        $queue = QueueManager::getQueueList((int) $request->attraction_id);
+        // Permite buscar por nome ou id
+        if ($request->has('attraction_name')) {
+            $attraction = Attraction::whereRaw('LOWER(name) = ?', [strtolower($request->attraction_name)])->firstOrFail();
+            $attractionId = $attraction->id;
+        } else {
+            $attractionId = $request->attraction_id;
+        }
+
+        $queue = QueueManager::getQueueList((int) $attractionId);
         return response()->json([
             'queue' => array_map(function ($v) {
                 return [
@@ -40,12 +49,14 @@ class QueueController extends Controller
     }
 
     public function callNext(Request $request)
-    {
-        $request->validate([
-        'attraction_id' => 'required|exists:attractions,id'
-        ]);
+    {// Permite buscar por nome ou id
+        if ($request->has('attraction_name')) {
+            $attraction = Attraction::whereRaw('LOWER(name) = ?', [strtolower($request->attraction_name)])->firstOrFail();
+            $attractionId = $attraction->id;
+        } else {
+            $attractionId = $request->attraction_id;
+        }
 
-        $attractionId = $request->attraction_id;
         $visitor = QueueManager::callNext($attractionId);
 
         if ($visitor) {
@@ -76,11 +87,21 @@ class QueueController extends Controller
     public function getVisitorPosition(Request $request)
     {
         $request->validate([
-            'visitor_id' => 'required|exists:visitors,id',
-            'attraction_id' => 'required|exists:attractions,id'
-        ]);
+        'visitor_id' => 'required|exists:visitors,id',
+    ]);
 
-        $position = QueueManager::getVisitorPosition($request->attraction_id, $request->visitor_id);
+    // Permite buscar por nome ou id
+        if ($request->has('attraction_name')) {
+            $attraction = Attraction::whereRaw('LOWER(name) = ?', [strtolower($request->attraction_name)])->firstOrFail();
+            $attractionId = $attraction->id;
+        } else {
+            $request->validate([
+                'attraction_id' => 'required|exists:attractions,id'
+            ]);
+            $attractionId = $request->attraction_id;
+        }
+
+        $position = QueueManager::getVisitorPosition($attractionId, $request->visitor_id);
 
         $message = $position !== null
             ? "Você está na posição $position da fila."

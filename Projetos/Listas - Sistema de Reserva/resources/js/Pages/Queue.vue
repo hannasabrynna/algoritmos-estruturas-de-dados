@@ -17,8 +17,8 @@
                 class="form-control w-full p-2 rounded border border-gray-300 focus:outline-none" required />
             </div>
             <div class="m-4">
-              <label for="enter_attraction_id" class="form-label">ID da Atração</label>
-              <input v-model="form.attraction_id" type="number" id="enter_attraction_id"
+              <label for="enter_attraction_name" class="form-label">Nome da Atração</label>
+              <input v-model="form.attraction_name" type="text" id="enter_attraction_name"
                 class="form-control w-full p-2 rounded border border-gray-300 focus:outline-none" required />
             </div>
             <div class="flex justify-center m-8">
@@ -36,8 +36,8 @@
         <div class="card-body m-4">
           <form @submit.prevent="verFila">
             <div class="mb-4">
-              <label for="view_attraction_id" class="form-label">ID da Atração</label>
-              <input v-model="viewForm.attraction_id" type="number" id="view_attraction_id"
+              <label for="view_attraction_name" class="form-label">Nome da Atração</label>
+              <input v-model="viewForm.attraction_name" type="text" id="view_attraction_name"
                 class="form-control w-full p-2 rounded border border-gray-300 focus:outline-none" required />
             </div>
             <div class="flex justify-center m-8">
@@ -77,8 +77,8 @@
         <div class="card-body m-4">
           <form @submit.prevent="chamarProximo">
             <div class="mb-4">
-              <label for="call_attraction_id" class="form-label">ID da Atração</label>
-              <input v-model="callForm.attraction_id" type="number" id="call_attraction_id"
+              <label for="call_attraction_name" class="form-label">Nome da Atração</label>
+              <input v-model="callForm.attraction_name" type="text" id="call_attraction_name"
                 class="form-control w-full p-2 rounded border border-gray-300 focus:outline-none" required />
             </div>
             <div class="flex justify-center m-8">
@@ -101,8 +101,8 @@
                 class="form-control w-full p-2 rounded border border-gray-300 focus:outline-none" required />
             </div>
             <div class="mb-3">
-              <label for="pos_attraction_id" class="form-label">ID da Atração</label>
-              <input v-model="positionForm.attraction_id" type="number" id="pos_attraction_id"
+              <label for="pos_attraction_name" class="form-label">Nome da Atração</label>
+              <input v-model="positionForm.attraction_name" type="text" id="pos_attraction_name"
                 class="form-control w-full p-2 rounded border border-gray-300 focus:outline-none" required />
             </div>
             <div class="flex justify-center ">
