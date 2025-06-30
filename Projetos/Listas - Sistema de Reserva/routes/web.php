@@ -9,7 +9,7 @@ use App\Http\Controllers\QueueController;
 use App\Http\Controllers\VisitorPortalController;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\DB;
 
 // Página inicial
 Route::get('/', function () {
@@ -39,18 +39,57 @@ Route::middleware('auth')->group(function () {
     Route::get('/visitors', [VisitorController::class, 'index'])->name('visitors.index');
     Route::get('/attractions', [AttractionController::class, 'index'])->name('attractions.index');
 
-   // Página principal do sistema de fila (interface Vue via Inertia)
-Route::get('/fila', fn () => Inertia::render('Queue'))->name('queue.view');
-Route::get('/queue/show', [QueueController::class, 'showQueue']);
-// Ações da fila virtual (JSON)
-Route::post('/fila/entrar', [QueueController::class, 'enterQueue'])->name('queue.enter');
-Route::get('/fila/ver', [QueueController::class, 'showQueue'])->name('queue.show'); // Exibe a fila por attraction_id
-Route::post('/fila/chamar', [QueueController::class, 'callNext'])->name('queue.call-next'); // Chama próximo da fila
-Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition'])->name('queue.position'); // Retorna posição
+    // Página principal do sistema de fila (interface Vue via Inertia)
+    Route::get('/fila', fn() => Inertia::render('Queue'))->name('queue.view');
+    Route::get('/queue/show', [QueueController::class, 'showQueue']);
+    // Ações da fila virtual (JSON)
+    Route::post('/fila/entrar', [QueueController::class, 'enterQueue'])->name('queue.enter');
+    Route::get('/fila/ver', [QueueController::class, 'showQueue'])->name('queue.show'); // Exibe a fila por attraction_id
+    Route::post('/fila/chamar', [QueueController::class, 'callNext'])->name('queue.call-next'); // Chama próximo da fila
+    Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition'])->name('queue.position'); // Retorna posição
 
-// Portal do Visitante (relatórios)
-Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues'])->name('visitor.queues');
-Route::get('/portal/visitante/{visitorId}/historico', [VisitorPortalController::class, 'getHistory'])->name('visitor.history');
+    Route::get('/stats', fn() => Inertia::render('Stats'))->name('stats.view');
+    Route::get('/stats/reservas-por-dia', function () {
+        return response()->json(
+            DB::table('reservas')
+                ->select(DB::raw('DATE(created_at) as data'), DB::raw('COUNT(*) as total'))
+                ->groupBy('data')
+                ->orderBy('data')
+                ->get()
+        );
+    })->name('stats.reservas_por_dia');
+
+    // Atração mais disputada
+    Route::get(
+        '/stats/atracao-mais-disputada',
+        fn() =>
+        response()->json(
+            DB::table('reservas')
+                ->select('atracao_id', DB::raw('COUNT(*) as total'))
+                ->groupBy('atracao_id')
+                ->orderByDesc('total')
+                ->limit(1)
+                ->get()
+        )
+    )->name('stats.atracao_mais_disputada');
+
+    // Visitante mais ativo
+    Route::get(
+        '/stats/visitante-mais-ativo',
+        fn() =>
+        response()->json(
+            DB::table('reservas')
+                ->select('visitante_id', DB::raw('COUNT(*) as total'))
+                ->groupBy('visitante_id')
+                ->orderByDesc('total')
+                ->limit(1)
+                ->get()
+        )
+    )->name('stats.visitante_mais_ativo');
+
+    // Portal do Visitante (relatórios)
+    Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues'])->name('visitor.queues');
+    Route::get('/portal/visitante/{visitorId}/historico', [VisitorPortalController::class, 'getHistory'])->name('visitor.history');
 });
 
 

@@ -13,7 +13,7 @@ const isUser = page.props.auth?.user?.role === 'visitor';
     
 
     <!-- Apenas admin -->
-    <Link v-if="isAdmin" href="*">Controle de filas</Link>
+    <Link v-if="isAdmin" href="/fila">Controle de filas</Link>
     <Link v-if="isAdmin" href="/attractions/create">Cadastrar Atração</Link>
 
     <Link :href="route('logout')" method="post" as="button" class="text-white hover:underline">Sair</Link>

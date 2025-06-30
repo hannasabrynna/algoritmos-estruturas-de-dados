@@ -26,7 +26,7 @@ console.log('User:', page.props.auth.user)
     </div>
 
     <div class="space-y-2">
-      <h2>Fila (só pra teste)</h2>
+      <h2>Fila</h2>
       <Link href="/fila" class="text-blue-600 hover:underline">Fila</Link>
     </div>
 
@@ -34,6 +34,11 @@ console.log('User:', page.props.auth.user)
     <div class="space-y-2" v-if="isAdmin">
       <h2>Lista de Visitantes cadastrados</h2>
       <Link href="/visitors" class="text-blue-600 hover:underline">Lista de visitantes</Link>
+    </div>
+
+    <div class="space-y-2" v-if="isAdmin">
+      <h2>Estatísticas e Métricas</h2>
+      <Link href="/stats" class="text-blue-600 hover:underline">Lista de visitantes</Link>
     </div>
   </main>
 

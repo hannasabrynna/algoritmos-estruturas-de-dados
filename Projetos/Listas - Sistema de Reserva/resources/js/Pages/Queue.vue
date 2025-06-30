@@ -62,7 +62,7 @@
     </div>
 
     <!-- 3. Chamar Próximo Visitante -->
-    <div class="card mb-4 shadow mx-auto" style="max-width: 500px; width: 100%;">
+    <div class="card mb-4 shadow mx-auto"  v-if="isAdmin" style="max-width: 500px; width: 100%;">
       <div class="card-header bg-danger text-black text-center fw-bold">
         3. Chamar Próximo Visitante
       </div>
@@ -129,6 +129,10 @@ import { ref } from 'vue';
 import Navbar from '@/Components/Navbar.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
+import { usePage, Link } from '@inertiajs/vue3';
+
+const page = usePage();
+const isAdmin = page.props.auth?.user?.role === 'admin';
 
 const form = ref({
   visitor_id: '',
