@@ -10,7 +10,8 @@ use App\Http\Controllers\VisitorPortalController;
 use App\Models\Attraction;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\QueueStatisticsController;
 
 // Página inicial
 Route::get('/', function () {
@@ -48,7 +49,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/fila/entrar', [QueueController::class, 'enterQueue'])->name('queue.enter');
     Route::get('/fila/ver', [QueueController::class, 'showQueue'])->name('queue.show'); // Exibe a fila por attraction_id
     Route::post('/fila/chamar', [QueueController::class, 'callNext'])->name('queue.call-next'); // Chama próximo da fila
-    Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition'])->name('queue.position'); // Retorna posição
+    Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition'])->name('queue.position'); // Retorna posição   
+
+   Route::get('/fila/estatisticas', [QueueStatisticsController::class, 'getStatistics']);
 
     // Portal do Visitante (relatórios)
     Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues'])->name('visitor.queues');

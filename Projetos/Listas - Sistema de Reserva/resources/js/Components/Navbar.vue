@@ -12,6 +12,7 @@ const isUser = page.props.auth?.user?.role === 'visitor';
       <div class="flex gap-4 items-center">
         <template v-if="page.props.auth?.user">
 
+
           <Link href="/attractions">Atrações</Link>
           <!-- VISITANTE logado -->
           <Link v-if="isUser" href="*">Minhas filas</Link>
