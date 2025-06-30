@@ -58,11 +58,34 @@
            <PrimaryButton type="submit" class="px-4">Ver Fila</PrimaryButton>
           </div>
         </form>
+
+        <Modal :show="showFilaModal" @close="showFilaModal = false" maxWidth="md">
+        <template #default>
+            <h5 class="mb-3 text-center">Visitantes na Fila</h5>
+            <ul class="list-group mb-2" v-if="filaAtual.length">
+            <li
+                v-for="visitante in filaAtual"
+                :key="visitante.id"
+                class="list-group-item d-flex justify-content-between align-items-center"
+            >
+                <span>
+                {{ visitante.name }} (ID: {{ visitante.id }})
+                </span>
+                <span class="badge bg-primary rounded-pill">{{ visitante.ticket_type }}</span>
+            </li>
+            </ul>
+            <div v-else class="text-center text-muted">Nenhum visitante na fila.</div>
+            <div class="d-flex justify-content-center mt-3">
+            <PrimaryButton @click="showFilaModal = false">Fechar</PrimaryButton>
+            </div>
+        </template>
+        </Modal>
+ 
       </div>
     </div>
 
     <!-- 3. Chamar Próximo Visitante -->
-    <div class="card mb-4 shadow mx-auto" style="max-width: 500px; width: 100%;">
+    <div class="card mb-4 shadow mx-auto"  v-if="isAdmin" style="max-width: 500px; width: 100%;">
       <div class="card-header bg-danger text-black text-center fw-bold">
         3. Chamar Próximo Visitante
       </div>
@@ -116,9 +139,17 @@
            <PrimaryButton type="submit" class="px-4">Ver minha posição Fila</PrimaryButton>
           </div>
         </form>
-        <div v-if="positionMessage" class="alert alert-info mt-3 text-center">
-          {{ positionMessage }}
-        </div>
+        <Modal :show="showPosicaoModal" @close="showPosicaoModal = false" maxWidth="md">
+        <template #default>
+            <h5 class="mb-3 text-center">Sua posição na fila</h5>
+            <div class="alert alert-info text-center">
+            {{ positionMessage }}
+            </div>
+            <div class="d-flex justify-content-center mt-3">
+            <PrimaryButton @click="showPosicaoModal = false">Fechar</PrimaryButton>
+            </div>
+        </template>
+        </Modal>
       </div>
     </div>
   </div>
@@ -128,7 +159,13 @@
 import { ref } from 'vue';
 import Navbar from '@/Components/Navbar.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { usePage, Link } from '@inertiajs/vue3';
+import Modal from '@/Components/Modal.vue';
 
+const showFilaModal = ref(false);
+const showPosicaoModal = ref(false);
+const page = usePage();
+const isAdmin = page.props.auth?.user?.role === 'admin';
 
 const form = ref({
   visitor_id: '',
@@ -149,7 +186,18 @@ const positionForm = ref({
 });
 
 const positionMessage = ref('');
+const filaAtual = ref([]); // Para armazenar a lista de visitantes da fila
 
+async function verFila() {
+  try {
+    const response = await axios.get('/fila/ver', { params: viewForm.value });
+    filaAtual.value = response.data.queue;
+    showFilaModal.value = true; // Abre o modal
+  } catch (error) {
+    alert('Erro ao buscar a fila.');
+    filaAtual.value = [];
+  }
+}
 // Métodos
 async function entrarNaFila() {
   try {
@@ -157,16 +205,6 @@ async function entrarNaFila() {
     alert('Você entrou na fila!');
   } catch (error) {
     alert('Erro ao entrar na fila.');
-  }
-}
-
-async function verFila() {
-  try {
-    const response = await axios.get('/fila/ver', { params: viewForm.value });
-    // Aqui você pode exibir a fila em outro card/modal se quiser
-    console.log(response.data);
-  } catch (error) {
-    alert('Erro ao buscar a fila.');
   }
 }
 
@@ -183,8 +221,10 @@ async function verPosicao() {
   try {
     const response = await axios.get('/fila/posicao', { params: positionForm.value });
     positionMessage.value = response.data.message;
+    showPosicaoModal.value = true; // Abre o modal da posição
   } catch (error) {
     positionMessage.value = 'Erro ao verificar posição.';
+    showPosicaoModal.value = true;
   }
 }
 </script>
