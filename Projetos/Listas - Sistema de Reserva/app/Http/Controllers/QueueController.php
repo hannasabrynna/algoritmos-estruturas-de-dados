@@ -7,6 +7,8 @@ use App\Models\Attraction;
 use App\Models\Visitor;
 use App\Services\QueueManager;
 use App\Models\ReservationHistory;
+use Inertia\Inertia;
+
 
 
 class QueueController extends Controller
@@ -57,23 +59,20 @@ class QueueController extends Controller
 
     public function getVisitorPosition(Request $request)
     {
-{
-    $request->validate([
-        'visitor_id' => 'required|exists:visitors,id',
-        'attraction_id' => 'required|exists:attractions,id'
-    ]);
+        $request->validate([
+            'visitor_id' => 'required|exists:visitors,id',
+            'attraction_id' => 'required|exists:attractions,id'
+        ]);
 
-    $position = QueueManager::getVisitorPosition($request->attraction_id, $request->visitor_id);
+        $position = QueueManager::getVisitorPosition($request->attraction_id, $request->visitor_id);
 
-    $message = $position !== null
-        ? "Você está na posição $position da fila."
-        : "Você não está na fila.";
+        $message = $position !== null
+            ? "Você está na posição $position da fila."
+            : "Você não está na fila.";
 
-    return view('queue.index', [
-        'positionMessage' => $message
-    ]);
-}
-
-
+        return response()->json([
+            'message' => $message,
+            'position' => $position
+        ]);
     }
 }

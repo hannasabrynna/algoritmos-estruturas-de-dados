@@ -39,27 +39,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/visitors', [VisitorController::class, 'index'])->name('visitors.index');
     Route::get('/attractions', [AttractionController::class, 'index'])->name('attractions.index');
 
-    Route::post('/fila/entrar', [QueueController::class, 'enterQueue']);
-    Route::get('/fila/{attractionId}', [QueueController::class, 'showQueue']);
-    Route::post('/fila/{attractionId}/chamar', [QueueController::class, 'callNext']);
-    Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition'])->name('queue.position');;
+   // Página principal do sistema de fila (interface Vue via Inertia)
+Route::get('/fila', fn () => Inertia::render('Queue'))->name('queue.view');
+Route::get('/queue/show', [QueueController::class, 'showQueue']);
+// Ações da fila virtual (JSON)
+Route::post('/fila/entrar', [QueueController::class, 'enterQueue'])->name('queue.enter');
+Route::get('/fila/ver', [QueueController::class, 'showQueue'])->name('queue.show'); // Exibe a fila por attraction_id
+Route::post('/fila/chamar', [QueueController::class, 'callNext'])->name('queue.call-next'); // Chama próximo da fila
+Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition'])->name('queue.position'); // Retorna posição
 
-    Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues']);
-    Route::get('/portal/visitante/{visitorId}/historico', [VisitorPortalController::class, 'getHistory']);
-
-    Route::view('/fila', 'queue')->name('queue.view');
-
-    Route::post('/fila/entrar', [QueueController::class, 'enterQueue'])->name('queue.enter');
-
-    Route::get('/fila/ver', function (Request $request) {
-        $queue = App\Services\QueueManager::getQueueList($request->attraction_id);
-        dd($queue); // ou exibir em view no futuro
-    })->name('queue.show');
-
-    Route::get('/fila/chamar', function (Request $request) {
-        $visitor = App\Services\QueueManager::callNext($request->attraction_id);
-        dd($visitor); // ou exibir em view no futuro
-    })->name('queue.call-next');
+// Portal do Visitante (relatórios)
+Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues'])->name('visitor.queues');
+Route::get('/portal/visitante/{visitorId}/historico', [VisitorPortalController::class, 'getHistory'])->name('visitor.history');
 });
 
 
