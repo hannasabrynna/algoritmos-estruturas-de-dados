@@ -165,8 +165,6 @@ import QueueStatsChart from '@/Components/Queue/QueueStatsChart.vue';
 
 const showFilaModal = ref(false);
 const showPosicaoModal = ref(false);
-
-import { usePage, Link } from '@inertiajs/vue3';
 const chartKey = ref(0); // forçar recriação do gráfico
 
 

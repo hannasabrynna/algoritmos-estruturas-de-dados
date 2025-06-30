@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition'])->name('queue.position'); // Retorna posição   
 
    Route::get('/fila/estatisticas', [QueueStatisticsController::class, 'getStatistics']);
+     Route::get('/stats', fn() => Inertia::render('Stats'))->name('stats.view');
 
     // Portal do Visitante (relatórios)
     Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues'])->name('visitor.queues');
