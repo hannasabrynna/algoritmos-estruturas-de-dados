@@ -39,9 +39,24 @@ class QueueController extends Controller
         ]);
     }
 
-    public function callNext($attractionId)
+    public function callNext(Request $request)
     {
+        $request->validate([
+        'attraction_id' => 'required|exists:attractions,id'
+        ]);
+
+        $attractionId = $request->attraction_id;
         $visitor = QueueManager::callNext($attractionId);
+
+        if ($visitor) {
+        // Salva no histórico
+        ReservationHistory::create([
+            'visitor_id' => $visitor->id,
+            'attraction_id' => $attractionId,
+            'reserved_at' => now(),
+        ]);
+
+       
         if ($visitor) {
             return response()->json([
                 'message' => 'Próximo visitante chamado com sucesso.',
@@ -51,11 +66,12 @@ class QueueController extends Controller
                     'ticket_type' => $visitor->ticket_type
                 ]
             ]);
+
         }
 
         return response()->json(['message' => 'Fila vazia. Nenhum visitante para chamar.'], 404);
     }
-
+    }
 
     public function getVisitorPosition(Request $request)
     {

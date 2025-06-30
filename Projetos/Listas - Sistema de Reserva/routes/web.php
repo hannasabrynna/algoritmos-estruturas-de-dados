@@ -10,6 +10,7 @@ use App\Http\Controllers\VisitorPortalController;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\QueueStatisticsController;
 
 // Página inicial
 Route::get('/', function () {
@@ -86,6 +87,8 @@ Route::middleware('auth')->group(function () {
                 ->get()
         )
     )->name('stats.visitante_mais_ativo');
+
+Route::get('/fila/estatisticas', [QueueStatisticsController::class, 'getStatistics']);
 
     // Portal do Visitante (relatórios)
     Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues'])->name('visitor.queues');

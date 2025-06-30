@@ -128,8 +128,10 @@
 import { ref } from 'vue';
 import Navbar from '@/Components/Navbar.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import QueueStatsChart from '@/Components/Queue/QueueStatsChart.vue';
 
 import { usePage, Link } from '@inertiajs/vue3';
+const chartKey = ref(0); // forçar recriação do gráfico
 
 const page = usePage();
 const isAdmin = page.props.auth?.user?.role === 'admin';
@@ -178,6 +180,7 @@ async function chamarProximo() {
   try {
     const response = await axios.post('/fila/chamar', callForm.value);
     alert(response.data.message || 'Próximo visitante chamado!');
+    chartKey.value++; // forçar reload do gráfico
   } catch (error) {
     alert('Erro ao chamar próximo.');
   }
