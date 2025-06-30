@@ -6,36 +6,31 @@ const isUser = page.props.auth?.user?.role === 'visitor';
 </script>
 
 <template>
-    <nav class="navbar">
-    <h1>TechPark</h1>
-    <Link href="/visitors/create">Cadastrar Visitante</Link>
-    <Link v-if="isUser" href="*">Minhas filas</Link>
-    
+    <nav class="navbar bg-blue-800 text-white px-6 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold font-impact tracking-wide">TechPark</h1>
 
-    <!-- Apenas admin -->
-    <Link v-if="isAdmin" href="*">Controle de filas</Link>
-    <Link v-if="isAdmin" href="/attractions/create">Cadastrar Atração</Link>
+      <div class="flex gap-4 items-center">
+        <template v-if="page.props.auth?.user">
 
-    <Link :href="route('logout')" method="post" as="button" class="text-white hover:underline">Sair</Link>
+          <Link href="/attractions">Atrações</Link>
+          <!-- VISITANTE logado -->
+          <Link v-if="isUser" href="*">Minhas filas</Link>
+
+          <!-- ADMIN logado -->
+          <Link v-if="isAdmin" href="*">Controle de filas</Link>
+          <Link v-if="isAdmin" href="/attractions/create">Cadastrar Atração</Link>
+          <Link href="/visitors/create">Cadastrar Visitante</Link>
+
+          <!-- Sair -->
+          <Link :href="route('logout')" method="post" as="button" class="text-white hover:underline">Sair</Link>
+        </template>
+
+        <template v-else>
+          <!-- Usuário NÃO autenticado -->
+          <Link :href="route('login')">Entrar</Link>
+          <Link :href="route('register')">Registrar</Link>
+        </template>
+      </div>
   </nav>
 </template>
 
-
-<style scoped>
-/* Aqui você pode adicionar algum estilo específico para o componente */
-.navbar {
-  background-color: #6b9fd3;
-  color: white;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-h1{
-  color: white;
-  font-size: 1.5rem;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  margin: 0;
-}
-</style>

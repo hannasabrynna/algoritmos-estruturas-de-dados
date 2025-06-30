@@ -1,4 +1,5 @@
 <script setup>
+import Navbar from '@/Components/Navbar.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
@@ -30,8 +31,9 @@ const submit = () => {
 </script>
 
 <template>
+    <Navbar />
     <GuestLayout>
-        <Head title="Log in" />
+        <Head title="Entrar" />
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}

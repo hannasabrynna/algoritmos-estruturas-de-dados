@@ -1,4 +1,5 @@
 <script setup>
+import Navbar from '@/Components/Navbar.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -21,6 +22,7 @@ const submit = () => {
 </script>
 
 <template>
+    <Navbar />
     <GuestLayout>
         <Head title="Register" />
 

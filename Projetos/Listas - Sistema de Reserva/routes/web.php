@@ -7,6 +7,7 @@ use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\AttractionController;
 use App\Http\Controllers\QueueController;
 use App\Http\Controllers\VisitorPortalController;
+use App\Models\Attraction;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -22,7 +23,8 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $attractions = Attraction::all();
+    return Inertia::render('Dashboard', ['attractions' => $attractions,]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -39,18 +41,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/visitors', [VisitorController::class, 'index'])->name('visitors.index');
     Route::get('/attractions', [AttractionController::class, 'index'])->name('attractions.index');
 
-   // Página principal do sistema de fila (interface Vue via Inertia)
-Route::get('/fila', fn () => Inertia::render('Queue'))->name('queue.view');
-Route::get('/queue/show', [QueueController::class, 'showQueue']);
-// Ações da fila virtual (JSON)
-Route::post('/fila/entrar', [QueueController::class, 'enterQueue'])->name('queue.enter');
-Route::get('/fila/ver', [QueueController::class, 'showQueue'])->name('queue.show'); // Exibe a fila por attraction_id
-Route::post('/fila/chamar', [QueueController::class, 'callNext'])->name('queue.call-next'); // Chama próximo da fila
-Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition'])->name('queue.position'); // Retorna posição
+    // Página principal do sistema de fila (interface Vue via Inertia)
+    Route::get('/fila', fn() => Inertia::render('Queue'))->name('queue.view');
+    Route::get('/queue/show', [QueueController::class, 'showQueue']);
+    // Ações da fila virtual (JSON)
+    Route::post('/fila/entrar', [QueueController::class, 'enterQueue'])->name('queue.enter');
+    Route::get('/fila/ver', [QueueController::class, 'showQueue'])->name('queue.show'); // Exibe a fila por attraction_id
+    Route::post('/fila/chamar', [QueueController::class, 'callNext'])->name('queue.call-next'); // Chama próximo da fila
+    Route::get('/fila/posicao', [QueueController::class, 'getVisitorPosition'])->name('queue.position'); // Retorna posição
 
-// Portal do Visitante (relatórios)
-Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues'])->name('visitor.queues');
-Route::get('/portal/visitante/{visitorId}/historico', [VisitorPortalController::class, 'getHistory'])->name('visitor.history');
+    // Portal do Visitante (relatórios)
+    Route::get('/portal/visitante/{visitorId}/filas', [VisitorPortalController::class, 'getActiveQueues'])->name('visitor.queues');
+    Route::get('/portal/visitante/{visitorId}/historico', [VisitorPortalController::class, 'getHistory'])->name('visitor.history');
 });
 
 
