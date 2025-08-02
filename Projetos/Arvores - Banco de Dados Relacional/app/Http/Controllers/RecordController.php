@@ -60,29 +60,29 @@ class RecordController extends Controller
         ]);
     }
 
-    public function destroy(Request $request)
+   public function destroy(Request $request)
 {
     $data = $request->validate([
         'table' => 'required|string',
         'key' => 'required',
     ]);
 
-    $tables = $this->getTables();
-    $table = $tables[$data['table']] ?? null;
+    $table = $this->manager->load($data['table']);
 
     if (!$table) {
         return back()->withErrors(['Tabela não encontrada']);
     }
 
-    if ($manager->hasDependencies($tableName, $key)) {
-    return back()->withErrors(['Registro não pode ser excluído: dependências encontradas']);
-}
+    if ($this->manager->hasDependencies($data['table'], $data['key'])) {
+        return back()->withErrors(['Registro não pode ser excluído: dependências encontradas']);
+    }
 
     $table->delete($data['key']);
-    $this->saveTables($tables);
+    $this->manager->save($table);
 
     return back()->with('message', 'Registro removido com sucesso');
 }
+
 
 public function update(Request $request)
 {
@@ -105,12 +105,26 @@ public function update(Request $request)
     return back()->with('message', 'Registro atualizado com sucesso');
 }
 
+private function getTableByName(string $name)
+{
+    $manager = new TableManager(); // instância do gerenciador
+    $tables = $manager->all();     // carrega todas as tabelas existentes
+
+    foreach ($tables as $table) {
+        if ($table->getName() === $name) {
+            return $table;
+        }
+    }
+
+    return null;
+}
+
 public function filter(Request $request)
 {
     $data = $request->validate([
         'table' => 'required|string',
         'field' => 'required|string',
-        'operator' => 'required|string', // =, >, <, >=, <=, !=
+        'operator' => 'required|string', // =, >, <, >=, <=, !=, contains
         'value' => 'required',
     ]);
 
@@ -125,6 +139,21 @@ public function filter(Request $request)
     return Inertia::render('Records/Filtered', [
         'table' => $data['table'],
         'records' => $results,
+    ]);
+}
+
+
+public function showFilterPage($table)
+{
+    $tabela = $this->getTableByName($table);
+
+    if (!$tabela) {
+        return back()->withErrors(['Tabela não encontrada']);
+    }
+
+    return Inertia::render('Records/FilterForm', [
+        'tableName' => $table,
+        'fields' => $tabela->getSchema(), //pra mostrar os campos disponíveis
     ]);
 }
 

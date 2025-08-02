@@ -23,9 +23,15 @@ class Table
     public function insert(array $record): void
     {
 
-        $primaryKey = $this->schema[0]['name'];
-        $key = $record[$primaryKey];
-        $this->tree->insert($key, $record);
+        // $primaryKey = $this->schema[0]['name'];
+        // $key = $record[$primaryKey];
+        // $this->tree->insert($key, $record);
+
+        $primaryKey = $this->schema[0]['name'] ?? null;
+
+    if (!$primaryKey || !isset($record[$primaryKey])) {
+        throw new \InvalidArgumentException("Chave primária inválida ou ausente.");
+    }
     }
 
     public function search($key): ?array
@@ -33,9 +39,29 @@ class Table
         return $this->tree->search($key);
     }
 
+    // public function all(): array
+    // {
+    //     return $this->tree->all();
+    // }
+
     public function all(): array
     {
-        return $this->tree->all();
+        $result = [];
+        $this->collectAll($this->root, $result);
+        return $result;
+    }
+
+    private function collectAll($node, &$result)
+    {
+        if ($node->isLeaf()) {
+            foreach ($node->getValues() as $value) {
+                $result[] = $value;
+            }
+        } else {
+            foreach ($node->getChildren() as $child) {
+                $this->collectAll($child, $result);
+            }
+        }
     }
 
     public function delete($key): void
@@ -48,41 +74,65 @@ class Table
         $this->tree->update($key, $newData);
     }
 
-    public function filter(string $field, string $operator, $value): array
+        public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getSchema(): array
+    {
+        return $this->schema;
+    }
+
+    //bagui pra filtrar
+public function filter($field, $operator, $value): array
 {
-    $all = $this->tree->getAll(); // ou outro método de acesso
-    return array_filter($all, function ($record) use ($field, $operator, $value) {
-        if (!isset($record[$field])) return false;
+    $results = [];
 
-        switch ($operator) {
-            case '=': return $record[$field] == $value;
-            case '>': return $record[$field] > $value;
-            case '<': return $record[$field] < $value;
-            case '>=': return $record[$field] >= $value;
-            case '<=': return $record[$field] <= $value;
-            case '!=': return $record[$field] != $value;
-            default: return false;
-        }
-    });
-}
+    foreach ($this->all() as $record) {
+        if (!isset($record[$field])) continue;
 
-public function validateForeignKeys(array $record, TableManager $manager): bool
-{
-    foreach ($this->schema as $column => $definition) {
-        if (isset($definition['foreign'])) {
-            $foreignTable = $manager->getTable($definition['foreign']['table']);
-            if (!$foreignTable) return false;
+        $recordValue = $record[$field];
 
-            $foreignKey = $definition['foreign']['column'];
-            if (!$foreignTable->exists($record[$column])) return false;
+        // sim e se for string? acho q não entendi oq milton quer que filtr
+        $match = match ($operator) {
+            '='  => $recordValue == $value,
+            '!=' => $recordValue != $value,
+            '>'  => $recordValue > $value,
+            '<'  => $recordValue < $value,
+            '>=' => $recordValue >= $value,
+            '<=' => $recordValue <= $value,
+            'contains' => is_string($recordValue) && str_contains(strtolower($recordValue), strtolower($value)),
+            default => false,
+        };
+
+        if ($match) {
+            $results[] = $record;
         }
     }
-    return true;
+
+    return $results;
 }
 
-public function exists($key): bool
-{
-    return $this->tree->find($key) !== null;
-}
+
+
+        public function validateForeignKeys(array $record, TableManager $manager): bool
+        {
+            foreach ($this->schema as $column => $definition) {
+                if (isset($definition['foreign'])) {
+                    $foreignTable = $manager->getTable($definition['foreign']['table']);
+                    if (!$foreignTable) return false;
+
+                    $foreignKey = $definition['foreign']['column'];
+                    if (!$foreignTable->exists($record[$column])) return false;
+                }
+            }
+            return true;
+        }
+
+        public function exists($key): bool
+        {
+            return $this->tree->find($key) !== null;
+        }
 
 }

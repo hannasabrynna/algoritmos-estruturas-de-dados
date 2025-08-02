@@ -19,6 +19,12 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+Route::post('/tabelas/filter', [RecordController::class, 'filter'])->name('tabelas.filtrar');
+Route::get('/tabelas/{table}/filtro', [RecordController::class, 'showFilterPage'])->name('tabelas.filtro');
+
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

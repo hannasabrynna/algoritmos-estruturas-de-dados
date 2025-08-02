@@ -106,6 +106,8 @@ const cancelEdit = () => {
             <h2 class="text-xl font-semibold leading-tight text-gray-800">SylvaDB</h2>
         </template>
 
+
+
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <section>
@@ -135,19 +137,32 @@ const cancelEdit = () => {
                 <hr class="my-6" />
 
                 <section v-if="allTables.length">
-                    <h2 class="text-lg font-bold mb-2">Tabelas Existentes</h2>
-                    <div class="flex flex-wrap gap-2 mb-4">
+                <h2 class="text-lg font-bold mb-2">Tabelas Existentes</h2>
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                    <div
+                    v-for="table in allTables"
+                    :key="table"
+                    class="border p-4 rounded shadow-sm bg-white flex flex-col gap-2"
+                    >
+                    <h3 class="font-semibold text-gray-800">{{ table }}</h3>
+                    <div class="flex gap-2">
                         <button
-                            v-for="table in allTables"
-                            :key="table"
-                            @click="currentTable = table"
-                            class="px-3 py-1 rounded border"
-                            :class="{ 'bg-gray-800 text-white': currentTable === table }"
+                        @click="currentTable = table"
+                        class="bg-gray-800 text-white px-3 py-1 text-sm rounded"
                         >
-                            {{ table }}
+                        Visualizar
                         </button>
+                        <a
+                        :href="`/tabelas/${table}/filtro`"
+                        class="bg-blue-600 text-white px-3 py-1 text-sm rounded"
+                        >
+                        Filtrar
+                        </a>
                     </div>
+                    </div>
+                </div>
                 </section>
+
 
                 <section v-if="currentTable">
                     <h3 class="text-lg font-bold">Inserir Registro em "{{ currentTable }}"</h3>
@@ -173,7 +188,7 @@ const cancelEdit = () => {
                                     :key="rec.id"
                                     :value="rec.id"
                                 >
-                                    {{ Object.values(rec).join('') }}
+                                    {{ Object.values(rec).join(',') }}
                                 </option>
                             </select>
                         </div>
@@ -213,6 +228,7 @@ const cancelEdit = () => {
                             </tr>
                         </tbody>
                     </table>
+
                 </section>
             </div>
         </div>
