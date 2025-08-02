@@ -53,5 +53,23 @@ class TableManager
         }
         return $tables;
     }
+
+    public function hasDependencies(string $tableName, $key): bool
+    {
+        foreach ($this->tables as $name => $table) {
+            foreach ($table->getSchema() as $col => $def) {
+                if (isset($def['foreign']) && $def['foreign']['table'] === $tableName) {
+                    $records = $table->getAllRecords();
+                    foreach ($records as $record) {
+                        if ($record[$col] == $key) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+}
+
 }
 

@@ -3,7 +3,6 @@ import { ref, reactive, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head, router } from '@inertiajs/vue3'
 
-// 🌱 Estado principal
 const currentTable = ref(null)
 const tableName = ref('')
 const allTables = ref([])
@@ -11,9 +10,11 @@ const allTables = ref([])
 const schemas = reactive({})
 const records = reactive({})
 const newRecord = reactive({})
-const newColumns = ref([{ name: '', type: 'string', nullable: false }])
+const newColumns = ref([{ name: '', type: 'string', nullable: false, foreignTable: '' }])
 
-// Detecta mudanças no schema para preparar o formulário
+const editingIndex = ref(null)
+const editingRecord = reactive({})
+
 watch(newColumns, (newCols) => {
     if (!currentTable.value) return
     newCols.forEach(col => {
@@ -34,10 +35,9 @@ const getInputType = (type) => {
 }
 
 const addColumn = () => {
-    newColumns.value.push({ name: '', type: 'string', nullable: false })
+    newColumns.value.push({ name: '', type: 'string', nullable: false, foreignTable: '' })
 }
 
-// Cria nova tabela
 const createTable = () => {
     const name = tableName.value.trim()
     if (!name || allTables.value.includes(name)) return alert('Nome inválido ou já existe.')
@@ -47,13 +47,11 @@ const createTable = () => {
     records[name] = []
     currentTable.value = name
 
-    // Limpa os campos
     tableName.value = ''
-    newColumns.value = [{ name: '', type: 'string', nullable: false }]
+    newColumns.value = [{ name: '', type: 'string', nullable: false, foreignTable: '' }]
     Object.keys(newRecord).forEach(key => delete newRecord[key])
 }
 
-// Insere registro
 const submitRecord = () => {
     if (!currentTable.value) return
 
@@ -76,6 +74,28 @@ const submitRecord = () => {
         }
     })
 }
+
+const removeRecord = (index) => {
+    if (!confirm('Deseja realmente remover este registro?')) return
+    records[currentTable.value].splice(index, 1)
+}
+
+const startEdit = (index) => {
+    editingIndex.value = index
+    Object.assign(editingRecord, records[currentTable.value][index])
+}
+
+const saveEdit = () => {
+    if (editingIndex.value === null) return
+    records[currentTable.value][editingIndex.value] = { ...editingRecord }
+    editingIndex.value = null
+    Object.keys(editingRecord).forEach(k => delete editingRecord[k])
+}
+
+const cancelEdit = () => {
+    editingIndex.value = null
+    Object.keys(editingRecord).forEach(k => delete editingRecord[k])
+}
 </script>
 
 <template>
@@ -88,7 +108,6 @@ const submitRecord = () => {
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <!-- 🌱 Criar Nova Tabela -->
                 <section>
                     <h2 class="text-lg font-bold mb-2">Criar Nova Tabela</h2>
                     <input v-model="tableName" placeholder="Nome da Tabela" class="mb-2 border p-1" />
@@ -100,10 +119,13 @@ const submitRecord = () => {
                             <option value="float">Decimal</option>
                             <option value="boolean">Booleano</option>
                             <option value="date">Data</option>
+                            <option value="foreign">Chave Estrangeira</option>
+                        </select>
+                        <select v-if="col.type === 'foreign'" v-model="col.foreignTable" class="border p-1">
+                            <option v-for="t in allTables" :key="t" :value="t">{{ t }}</option>
                         </select>
                         <label>
-                            <input type="checkbox" v-model="col.nullable" />
-                            Nullable
+                            <input type="checkbox" v-model="col.nullable" /> Nullable
                         </label>
                     </div>
                     <button @click="addColumn" class="bg-blue-500 text-white px-3 py-1 rounded">Adicionar Coluna</button>
@@ -112,7 +134,6 @@ const submitRecord = () => {
 
                 <hr class="my-6" />
 
-                <!-- 📋 Selecionar Tabela -->
                 <section v-if="allTables.length">
                     <h2 class="text-lg font-bold mb-2">Tabelas Existentes</h2>
                     <div class="flex flex-wrap gap-2 mb-4">
@@ -128,23 +149,37 @@ const submitRecord = () => {
                     </div>
                 </section>
 
-                <!-- 🌿 Inserir Registro -->
                 <section v-if="currentTable">
                     <h3 class="text-lg font-bold">Inserir Registro em "{{ currentTable }}"</h3>
                     <form @submit.prevent="submitRecord" class="mb-4 mt-2">
                         <div v-for="col in schemas[currentTable]" :key="col.name" class="mb-2">
                             <input
+                                v-if="col.type !== 'foreign'"
                                 :type="getInputType(col.type)"
                                 v-model="newRecord[col.name]"
                                 :placeholder="col.name"
                                 :required="!col.nullable"
                                 class="border p-1 w-full"
                             />
+                            <select
+                                v-else
+                                v-model="newRecord[col.name]"
+                                :required="!col.nullable"
+                                class="border p-1 w-full"
+                            >
+                                <option disabled value="">Selecione {{ col.name }}</option>
+                                <option
+                                    v-for="rec in records[col.foreignTable] || []"
+                                    :key="rec.id"
+                                    :value="rec.id"
+                                >
+                                    {{ Object.values(rec).join('') }}
+                                </option>
+                            </select>
                         </div>
                         <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded">Inserir</button>
                     </form>
 
-                    <!-- 🌳 Registros -->
                     <h4 class="font-semibold mb-1">Registros em "{{ currentTable }}"</h4>
                     <table class="table-auto w-full border mt-2">
                         <thead>
@@ -152,16 +187,28 @@ const submitRecord = () => {
                                 <th v-for="col in schemas[currentTable]" :key="col.name" class="border px-2 py-1">
                                     {{ col.name }}
                                 </th>
+                                <th class="border px-2 py-1">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(rec, index) in records[currentTable]" :key="index">
-                                <td
-                                    v-for="col in schemas[currentTable]"
-                                    :key="col.name"
-                                    class="border px-2 py-1"
-                                >
-                                    {{ rec[col.name] }}
+                                <td v-for="col in schemas[currentTable]" :key="col.name" class="border px-2 py-1">
+                                    <template v-if="editingIndex === index">
+                                        <input v-model="editingRecord[col.name]" :type="getInputType(col.type)" class="border p-1 w-full" />
+                                    </template>
+                                    <template v-else>
+                                        {{ rec[col.name] }}
+                                    </template>
+                                </td>
+                                <td class="border px-2 py-1 text-center">
+                                    <template v-if="editingIndex === index">
+                                        <button @click="saveEdit" class="text-green-600">Salvar</button>
+                                        <button @click="cancelEdit" class="text-gray-500 ml-2">Cancelar</button>
+                                    </template>
+                                    <template v-else>
+                                        <button @click="startEdit(index)" class="text-blue-600">Editar</button>
+                                        <button @click="removeRecord(index)" class="text-red-600 ml-2">Remover</button>
+                                    </template>
                                 </td>
                             </tr>
                         </tbody>
