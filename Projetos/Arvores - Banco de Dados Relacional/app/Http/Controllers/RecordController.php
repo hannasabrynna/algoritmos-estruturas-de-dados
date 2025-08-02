@@ -4,16 +4,25 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\DataStructures\BPlusTree\BPlusTree;
 use Inertia\Inertia;
+use App\Database\Table;
+use App\Database\TableManager;
+// use App\Services\StorageTableManager;
 
 class RecordController extends Controller
 {
-    private static ?BPlusTree $tree = null;
+    protected TableManager $manager;
 
     public function __construct()
     {
-        if (is_null(self::$tree)) {
-            self::$tree = new BPlusTree(); // você pode ajustar o maxKeys se quiser
-        }
+        $this->manager = new TableManager();
+    }
+
+    public function index(Request $request)
+    {
+        $tables = $this->manager->all();
+        return Inertia::render('Record/Index', [
+            'tables' => array_keys($tables),
+        ]);
     }
 
     public function store(Request $request)
@@ -24,13 +33,30 @@ class RecordController extends Controller
             'record' => 'required|array',
         ]);
 
-        // usa a primeira coluna como chave (você pode alterar isso)
-        $primaryKey = $data['schema'][0]['name'];
-        $key = $data['record'][$primaryKey];
-        $value = $data['record'];
+        $table = $this->manager->load($data['table']);
 
-        self::$tree->insert($key, $value);
+        if (!$table) {
+            $table = new Table($data['table'], $data['schema']);
+        }
 
-        return back()->with('message', 'Registro inserido com sucesso');
+        $table->insert($data['record']);
+        $this->manager->save($table);
+
+        return back()->with('message', 'Registro inserido com sucesso.');
+    }
+
+    public function show(string $table)
+    {
+        $tableObj = $this->manager->load($table);
+
+        if (!$tableObj) {
+            return back()->withErrors(['message' => 'Tabela não encontrada']);
+        }
+
+        return Inertia::render('Record/Show', [
+            'table' => $table,
+            'schema' => $tableObj->schema,
+            'records' => $tableObj->all(),
+        ]);
     }
 }

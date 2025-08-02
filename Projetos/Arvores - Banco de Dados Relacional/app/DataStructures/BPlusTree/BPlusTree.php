@@ -138,4 +138,37 @@ private function splitInternalNode(BPlusNode $node): void
         $this->insertIntoParent($node, $promotedKey, $newNode);
     }
 }
+
+public function getLeftmostLeaf(): ?BPlusNode
+{
+    $node = $this->root;
+    while (!$node->isLeaf) {
+        $node = $node->children[0];
+    }
+    return $node;
+}
+
+public function getAllRecords(): array
+{
+    $records = [];
+    $this->traverseLeafNodes(function($key, $value) use (&$records) {
+        $records[$key] = $value;
+    });
+    return $records;
+}
+
+private function traverseLeafNodes(callable $callback): void
+{
+    $node = $this->root;
+    while (!$node->isLeaf()) {
+        $node = $node->getChildren()[0];
+    }
+
+    while ($node) {
+        foreach ($node->getKeys() as $i => $key) {
+            $callback($key, $node->getValues()[$i]);
+        }
+        $node = $node->getNext(); // se estiver implementando ponteiro entre folhas
+    }
+}
 }
