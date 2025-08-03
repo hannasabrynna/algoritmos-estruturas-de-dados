@@ -28,10 +28,12 @@ class Table
         // $this->tree->insert($key, $record);
 
         $primaryKey = $this->schema[0]['name'] ?? null;
+        $key = $record[$primaryKey];
 
     if (!$primaryKey || !isset($record[$primaryKey])) {
         throw new \InvalidArgumentException("Chave primária inválida ou ausente.");
     }
+     $this->tree->insert($key, $record);
     }
 
     public function search($key): ?array
