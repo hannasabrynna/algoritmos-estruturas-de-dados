@@ -49,18 +49,18 @@ class Table
     public function all(): array
     {
         $result = [];
-        $this->collectAll($this->root, $result);
+        $this->collectAll($this->tree->getRoot(), $result);
         return $result;
     }
 
-    private function collectAll($node, &$result)
+    private function collectAll($node, &$result): void
     {
-        if ($node->isLeaf()) {
-            foreach ($node->getValues() as $value) {
-                $result[] = $value;
+        if ($node->isLeaf) {
+            foreach ($node->children as $child) {
+                $result[] = $child;
             }
         } else {
-            foreach ($node->getChildren() as $child) {
+            foreach ($node->children as $child) {
                 $this->collectAll($child, $result);
             }
         }
