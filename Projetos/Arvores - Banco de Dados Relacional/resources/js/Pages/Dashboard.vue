@@ -6,6 +6,8 @@ import { Head, router } from '@inertiajs/vue3'
 const currentTable = ref(null)
 const tableName = ref('')
 const allTables = ref([])
+const primaryKey = ref('')
+
 
 const schemas = reactive({})
 const records = reactive({})
@@ -14,6 +16,16 @@ const newColumns = ref([{ name: '', type: 'string', nullable: false, foreignTabl
 
 const editingIndex = ref(null)
 const editingRecord = reactive({})
+
+
+const removeColumn = (index) => {
+    // Se a coluna removida era a PK, limpar a seleção
+    if (newColumns.value[index].name === primaryKey.value) {
+        primaryKey.value = ''
+    }
+
+    newColumns.value.splice(index, 1)
+}
 
 watch(newColumns, (newCols) => {
     if (!currentTable.value) return
@@ -39,6 +51,26 @@ const addColumn = () => {
 }
 
 const createTable = () => {
+
+    if (!primaryKey.value) {
+        alert('Por favor, selecione uma chave primária (PK).')
+        return
+    }
+     const payload = {
+        table: tableName.value,
+        schema: newColumns.value,
+        primaryKey: primaryKey.value
+    }
+
+    // router.post('/tables', payload, {
+    //     onSuccess: () => {
+    //         tableName.value = ''
+    //         newColumns.value = [{ name: '', type: 'string', nullable: false }]
+    //         primaryKey.value = ''
+    //     }
+    // })
+
+
     const name = tableName.value.trim()
     if (!name || allTables.value.includes(name)) return alert('Nome inválido ou já existe.')
 
@@ -126,9 +158,23 @@ const cancelEdit = () => {
                         <select v-if="col.type === 'foreign'" v-model="col.foreignTable" class="border p-1">
                             <option v-for="t in allTables" :key="t" :value="t">{{ t }}</option>
                         </select>
+
                         <label>
                             <input type="checkbox" v-model="col.nullable" /> Nullable
                         </label>
+
+                         <label>
+                            <input type="radio" name="primaryKey" v-model="primaryKey" :value="col.name" />PK
+                        </label>
+
+                         <button
+        @click="removeColumn(index)"
+        class="text-red-600 font-bold px-2"
+        title="Remover coluna"
+    >
+        ×
+    </button>
+
                     </div>
                     <button @click="addColumn" class="bg-blue-500 text-white px-3 py-1 rounded">Adicionar Coluna</button>
                     <button @click="createTable" class="ml-2 bg-green-600 text-white px-3 py-1 rounded">Criar Tabela</button>
