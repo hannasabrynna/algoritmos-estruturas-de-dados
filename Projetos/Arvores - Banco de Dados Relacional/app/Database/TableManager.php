@@ -69,7 +69,5 @@ class TableManager
             }
         }
         return false;
+    }
 }
-
-}
-
