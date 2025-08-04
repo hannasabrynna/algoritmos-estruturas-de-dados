@@ -148,14 +148,29 @@ public function getLeftmostLeaf(): ?BPlusNode
     return $node;
 }
 
-public function getAllRecords(): array
-{
-    $records = [];
-    $this->traverseLeafNodes(function($key, $value) use (&$records) {
-        $records[$key] = $value;
-    });
-    return $records;
-}
+// public function getAllRecords(): array
+// {
+//     $records = [];
+//     $this->traverseLeafNodes(function($key, $value) use (&$records) {
+//         $records[$key] = $value;
+//     });
+//     return $records;
+// }
+    public function getAll(): array
+    {
+        $records = [];
+
+        $node = $this->getLeftmostLeaf();
+        while ($node !== null) {
+            foreach ($node->children as $entry) {
+                $records[] = $entry['value']; // apenas os dados
+            }
+            $node = $node->nextLeaf;
+        }
+
+        return $records;
+    }
+
 
 private function traverseLeafNodes(callable $callback): void
 {

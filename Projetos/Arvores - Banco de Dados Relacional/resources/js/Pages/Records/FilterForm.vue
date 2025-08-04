@@ -7,13 +7,9 @@
         <label class="block text-sm font-semibold">Campo</label>
         <select v-model="form.field" class="w-full border rounded p-2">
           <option disabled value="">Selecione um campo</option>
-          <option
-            v-for="field in fields"
-            :key="field.name"
-            :value="field.name"
-            >
+          <option v-for="field in fields" :key="field.name" :value="field.name">
             {{ field.name }} ({{ field.type }})
-            </option>
+          </option>
 
         </select>
       </div>
@@ -42,6 +38,10 @@
         Filtrar
       </button>
     </form>
+
+    <div class="mt-6">
+      <a :href="`/dashboard`" class="text-blue-600 hover:underline">Voltar a tabela</a>
+    </div>
   </div>
 </template>
 
@@ -62,7 +62,13 @@ const form = ref({
   value: '',
 });
 
+// const submitFilter = () => {
+//   router.post('/tabelas/filter', form.value);
+// };
 const submitFilter = () => {
-  router.post('/tabelas/filter', form.value);
+  router.visit('/tabelas/filter', {
+    method: 'post',
+    data: form.value,
+  });
 };
 </script>

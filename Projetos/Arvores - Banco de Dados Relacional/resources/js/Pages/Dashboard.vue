@@ -167,13 +167,9 @@ const cancelEdit = () => {
                             <input type="radio" name="primaryKey" v-model="primaryKey" :value="col.name" />PK
                         </label>
 
-                         <button
-        @click="removeColumn(index)"
-        class="text-red-600 font-bold px-2"
-        title="Remover coluna"
-    >
-        ×
-    </button>
+                         <button @click="removeColumn(index)" class="text-red-600 font-bold px-2" title="Remover coluna">
+                            ×
+                        </button>
 
                     </div>
                     <button @click="addColumn" class="bg-blue-500 text-white px-3 py-1 rounded">Adicionar Coluna</button>

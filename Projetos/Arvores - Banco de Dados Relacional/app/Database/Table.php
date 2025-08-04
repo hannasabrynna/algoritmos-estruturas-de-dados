@@ -26,14 +26,15 @@ class Table
         // $primaryKey = $this->schema[0]['name'];
         // $key = $record[$primaryKey];
         // $this->tree->insert($key, $record);
-
         $primaryKey = $this->schema[0]['name'] ?? null;
-        $key = $record[$primaryKey];
 
-    if (!$primaryKey || !isset($record[$primaryKey])) {
-        throw new \InvalidArgumentException("Chave primária inválida ou ausente.");
-    }
-     $this->tree->insert($key, $record);
+        if (!$primaryKey || !isset($record[$primaryKey])) {
+            throw new \InvalidArgumentException("Chave primária inválida ou ausente.");
+        }
+
+        $key = $record[$primaryKey];
+        $this->tree->insert($key, $record);
+    
     }
 
     public function search($key): ?array
@@ -48,9 +49,11 @@ class Table
 
     public function all(): array
     {
-        $result = [];
-        $this->collectAll($this->tree->getRoot(), $result);
-        return $result;
+        // $result = [];
+        // $this->collectAll($this->tree->getRoot(), $result);
+        // return $result;
+        return $this->tree->getAll();
+
     }
 
     private function collectAll($node, &$result): void
@@ -86,8 +89,8 @@ class Table
         return $this->schema;
     }
 
-    //bagui pra filtrar
-public function filter($field, $operator, $value): array
+   
+    public function filter($field, $operator, $value): array
 {
     $results = [];
 
@@ -96,7 +99,18 @@ public function filter($field, $operator, $value): array
 
         $recordValue = $record[$field];
 
-        // sim e se for string? acho q não entendi oq milton quer que filtr
+        // converter tipo do valor para comparar corretamente
+        $schemaField = collect($this->schema)->firstWhere('name', $field);
+        if ($schemaField) {
+            $type = $schemaField['type'];
+            $value = match($type) {
+                'int' => (int) $value,
+                'float' => (float) $value,
+                'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN),
+                default => $value, // string ou outros
+            };
+        }
+
         $match = match ($operator) {
             '='  => $recordValue == $value,
             '!=' => $recordValue != $value,
@@ -115,7 +129,6 @@ public function filter($field, $operator, $value): array
 
     return $results;
 }
-
 
 
         public function validateForeignKeys(array $record, TableManager $manager): bool
