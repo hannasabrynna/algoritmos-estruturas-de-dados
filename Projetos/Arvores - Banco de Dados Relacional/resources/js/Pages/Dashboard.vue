@@ -134,20 +134,14 @@ const cancelEdit = () => {
     <Head title="SylvaDB" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">SylvaDB</h2>
-        </template>
-
-
-
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <section>
-                    <h2 class="text-lg font-bold mb-2">Criar Nova Tabela</h2>
-                    <input v-model="tableName" placeholder="Nome da Tabela" class="mb-2 border p-1" />
-                    <div v-for="(col, index) in newColumns" :key="index" class="mb-2 flex gap-2">
-                        <input v-model="col.name" placeholder="Nome da Coluna" class="border p-1" />
-                        <select v-model="col.type" class="border p-1">
+                <section class="bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-xl font-bold mb-8">Criar Nova Tabela</h2>
+                    <input v-model="tableName" placeholder="Nome da Tabela" class="mb-4 border border-gray-300 rounded-md p-2 flex-grow min-w-[150px]" />
+                    <div v-for="(col, index) in newColumns" :key="index" class="mb-4 flex flex-wrap gap-3 items-center">
+                        <input v-model="col.name" placeholder="Nome da Coluna" class="border border-gray-300 rounded-md p-2 flex-grow min-w-[150px]" />
+                        <select v-model="col.type" class="border border-gray-300 rounded-md p-2">
                             <option value="string">Texto</option>
                             <option value="int">Inteiro</option>
                             <option value="float">Decimal</option>
@@ -155,31 +149,31 @@ const cancelEdit = () => {
                             <option value="date">Data</option>
                             <option value="foreign">Chave Estrangeira</option>
                         </select>
-                        <select v-if="col.type === 'foreign'" v-model="col.foreignTable" class="border p-1">
+                        <select v-if="col.type === 'foreign'" v-model="col.foreignTable" class="border border-gray-300 rounded-md p-2">
                             <option v-for="t in allTables" :key="t" :value="t">{{ t }}</option>
                         </select>
 
                         <label>
-                            <input type="checkbox" v-model="col.nullable" /> Nullable
+                            <input type="checkbox" v-model="col.nullable" class="flex items-center space-x-1 text-sm rounded-sm" /> Nullable
                         </label>
 
                          <label>
-                            <input type="radio" name="primaryKey" v-model="primaryKey" :value="col.name" />PK
+                            <input type="radio" name="primaryKey" v-model="primaryKey" :value="col.name" class="flex items-center space-x-1 text-sm" />PK
                         </label>
 
-                         <button @click="removeColumn(index)" class="text-red-600 font-bold px-2" title="Remover coluna">
+                         <button @click="removeColumn(index)" class="text-red-600 font-bold px-3 py-1 rounded hover:bg-red-100 transition" title="Remover coluna">
                             ×
                         </button>
 
                     </div>
-                    <button @click="addColumn" class="bg-blue-500 text-white px-3 py-1 rounded">Adicionar Coluna</button>
-                    <button @click="createTable" class="ml-2 bg-green-600 text-white px-3 py-1 rounded">Criar Tabela</button>
+                    <div class="mt-8">   
+                        <button @click="addColumn" class=" bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-3 transition">Adicionar Coluna</button>
+                        <button @click="createTable" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition">Criar Tabela</button>
+                    </div>
                 </section>
 
-                <hr class="my-6" />
-
-                <section v-if="allTables.length">
-                <h2 class="text-lg font-bold mb-2">Tabelas Existentes</h2>
+                <section v-if="allTables.length" class="my-4 bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-xl font-bold mb-8">Tabelas Existentes</h2>
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                     <div
                     v-for="table in allTables"
@@ -206,8 +200,8 @@ const cancelEdit = () => {
                 </section>
 
 
-                <section v-if="currentTable">
-                    <h3 class="text-lg font-bold">Inserir Registro em "{{ currentTable }}"</h3>
+                <section v-if="currentTable" class="my-4 bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold mb-8">Inserir Registro em "{{ currentTable }}"</h3>
                     <form @submit.prevent="submitRecord" class="mb-4 mt-2">
                         <div v-for="col in schemas[currentTable]" :key="col.name" class="mb-2">
                             <input
@@ -216,7 +210,7 @@ const cancelEdit = () => {
                                 v-model="newRecord[col.name]"
                                 :placeholder="col.name"
                                 :required="!col.nullable"
-                                class="border p-1 w-full"
+                                class="w-full mb-4 border border-gray-300 rounded-md p-2 flex-grow min-w-[150px]"
                             />
                             <select
                                 v-else
@@ -234,7 +228,7 @@ const cancelEdit = () => {
                                 </option>
                             </select>
                         </div>
-                        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded">Inserir</button>
+                        <button type="submit" class=" bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-3 transition">Inserir</button>
                     </form>
 
                     <h4 class="font-semibold mb-1">Registros em "{{ currentTable }}"</h4>
