@@ -1,6 +1,11 @@
 <template>
-  <div class="p-6 max-w-6xl mx-auto">
-    <h2 class="text-2xl font-bold mb-4">Resultados do Filtro - Tabela: {{ table }}</h2>
+   <FilterLayout>
+
+  <!-- <div class="py-12">
+    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8"> -->
+      <section class="bg-white p-6 rounded-lg shadow-sm">
+        <h2 class="text-xl font-bold mb-8">Resultado - Tabela: {{ table }}</h2>
+      <!-- <h2 class="text-2xl font-bold mb-4">Tabela: {{ table }}</h2> -->
 
     <div v-if="records.length > 0">
       <table class="w-full border text-sm text-left">
@@ -22,14 +27,21 @@
     <div v-else class="text-gray-500 mt-6">
       Nenhum resultado encontrado com os critérios fornecidos.
     </div>
+      </section>
 
-    <div class="mt-6">
-      <a :href="`/tabelas/${table}/filtro`" class="text-blue-600 hover:underline">Voltar ao filtro</a>
+      <div class="mt-8">   
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-3 transition">
+           <a :href="`/tabelas/${table}/filtro`" class="">Voltar ao filtro</a>
+        </button>
     </div>
-  </div>
+    <!-- </div>
+  </div> -->
+   </FilterLayout>
 </template>
 
 <script setup>
+import FilterLayout from '@/Layouts/FilterLayout.vue'
+
 defineProps({
   table: String,
   records: Array,
